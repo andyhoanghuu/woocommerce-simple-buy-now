@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name:     Woocommerce Simple Buy Now
+ * Plugin Name:     WooCommerce Simple Buy Now
  * Plugin URI:      ndoublehwp.com
  * Description:     Add Buy Now button and add to cart/ checkout in the single product page.
  * Author:          ndoublehwp
  * Author URI:      https://twitter.com/NDoubleHWP
  * Text Domain:     woocommerce-simple-buy-now
  * Domain Path:     /languages
- * Version:         1.0.0
+ * Version:         1.0.1
  *
  * @package         Woocommerce_Simple_Buy_Now
  */
@@ -68,6 +68,20 @@ class WooCommerce_Simple_Buy_Now {
 	private static $instance;
 
 	/**
+	 * Status.
+	 *
+	 * @var string
+	 */
+	private $enable = '';
+
+	/**
+	 * Position.
+	 *
+	 * @var string
+	 */
+	private $position = 'before';
+
+	/**
 	 * Returns the instance.
 	 */
 	public static function get_instance() {
@@ -86,7 +100,7 @@ class WooCommerce_Simple_Buy_Now {
 		$enable          = get_option( 'woocommerce_simple_buy_single_product_enable' );
 		$button_position = get_option( 'woocommerce_simple_buy_single_product_position' );
 
-		if ( $enable && 'no' !== $enable ) {
+		if ( $this->is_enable() ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 20 );
 			add_action( 'plugins_loaded', array( $this, 'i18n' ), 3 );
 			add_action( 'wp_ajax_wsb_add_to_cart_ajax', array( $this, 'add_to_cart_ajax' ) );
@@ -94,11 +108,13 @@ class WooCommerce_Simple_Buy_Now {
 			add_action( 'wp_footer', array( $this, 'add_checkout_template' ) );
 			add_filter( 'body_class', array( $this, 'wsb_body_class' ) );
 
-			if ( 'before' === $button_position ) {
+			if ( $this->is_before_button() ) {
 				add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'add_simple_buy_button' ) );
 			} else {
 				add_action( 'woocommerce_after_add_to_cart_button', array( $this, 'add_simple_buy_button' ) );
 			}
+
+			add_action( 'wsb_before_add_to_cart', array( $this, 'reset_cart' ), 10 );
 		}
 
 		add_filter( 'woocommerce_get_settings_pages', array( $this, 'settings_page' ) );
@@ -126,13 +142,119 @@ class WooCommerce_Simple_Buy_Now {
 		wp_localize_script( 'woocommerce-simple-buy-now', 'woocommerce_simple_buy_now', array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 		) );
+
+		/**
+		 * Fires enqueue scripts.
+		 *
+		 * @param WooCommerce_Simple_Buy_Now WooCommerce_Simple_Buy_Now main class.
+		 */
+		do_action( 'wsb_enqueue_scripts', $this );
 	}
 
 	/**
-	 * Translations
+	 * Translations.
 	 */
 	public function i18n() {
 		load_plugin_textdomain( 'woocommerce-simple-buy-now', false, 'woocommerce-simple-buy-now/languages' );
+	}
+
+	/**
+	 * Add class to body tag with check availability page.
+	 *
+	 * @param  array $classes classes.
+	 * @return array
+	 */
+	public function wsb_body_class( $classes ) {
+		$button_position = get_option( 'woocommerce_simple_buy_single_product_position' );
+
+		if ( is_product() ) {
+			$classes[] = 'woocommerce-simple-buy-now';
+
+			if ( $this->is_replace_button() ) {
+				$classes[] = 'woocommerce-simple-buy-now--remove_add_to_cart_btn';
+			}
+
+			if ( $this->is_remove_quantity() ) {
+				$classes[] = 'woocommerce-simple-buy-now--remove_quantity_input';
+			}
+		}
+
+		return $classes;
+	}
+
+	/**
+	 * Is enable.
+	 */
+	public function is_enable() {
+		$this->enable = get_option( 'woocommerce_simple_buy_single_product_enable' );
+
+		if ( $this->enable && 'no' !== $this->enable ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get button title.
+	 *
+	 * @return string
+	 */
+	public function get_button_title() {
+		$title = esc_html__( 'Buy Now', 'woocommerce-simple-buy-now' );
+
+		if ( get_option( 'woocommerce_simple_buy_single_product_button' ) ) {
+			$title = get_option( 'woocommerce_simple_buy_single_product_button' );
+		}
+
+		return $title;
+	}
+
+	/**
+	 * Get position button.
+	 */
+	public function get_position() {
+		$this->position = get_option( 'woocommerce_simple_buy_single_product_position', $this->position );
+
+		return $this->position;
+	}
+
+	/**
+	 * If button position is before `add to cart` button.
+	 *
+	 * @return boolean
+	 */
+	public function is_before_button() {
+		return ( 'before' === $this->get_position() );
+	}
+
+	/**
+	 * If button position is after `add to cart` button.
+	 *
+	 * @return boolean
+	 */
+	public function is_after_button() {
+		return ( 'after' === $this->get_position() );
+	}
+
+	/**
+	 * If `buy now` button replace `add to cart` button
+	 *
+	 * @return boolean
+	 */
+	public function is_replace_button() {
+		return ( 'replace' === $this->get_position() );
+	}
+
+	/**
+	 * If remove quantity input.
+	 *
+	 * @return boolean
+	 */
+	public function is_remove_quantity() {
+		$remove_quantity = get_option( 'woocommerce_simple_buy_single_product_remove_quantity' );
+
+		return ( $remove_quantity && 'no' !== $remove_quantity );
 	}
 
 	/**
@@ -142,7 +264,7 @@ class WooCommerce_Simple_Buy_Now {
 		global $product;
 		?>
 	    	<button type="submit" value="<?php echo esc_attr( $product->get_id() ); ?>" class="js-wsb-add-to-cart wsb-add-to-cart">
-	    		<?php echo esc_html( get_option( 'woocommerce_simple_buy_single_product_button', 'Buy Now' ) ); ?>
+	    		<?php echo esc_html( $this->get_button_title() ); ?>
 	    	</button>
 		<?php
 	}
@@ -185,21 +307,49 @@ class WooCommerce_Simple_Buy_Now {
 	public function add_to_cart_ajax() {
 		$product_id        = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_POST['product_id'] ) );
 		$quantity          = empty( $_POST['quantity'] ) ? 1 : wc_stock_amount( $_POST['quantity'] );
-		$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity );
-		$product_status    = get_post_status( $product_id );
+		$variation_id      = isset( $_POST['variation_id'] ) ? $_POST['variation_id'] : '';
 
-		$variation_id      = $_POST['variation_id'];
+		$args = array(
+			'product_id'   => $product_id,
+			'quantity' 	   => $quantity,
+			'variation_id' => $variation_id,
+		);
+
+		/**
+		 * Filters the array of args product.
+		 *
+		 * @param array     $args Args.
+		 */
+		$args = apply_filters( 'wsb_cart_args', $args );
+
+		$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $args['product_id'], $args['quantity'] );
+		$product_status    = get_post_status( $args['product_id'] );
 
 		try {
-		  	if ( $variation_id ) {
-		    	$added_to_cart = WC()->cart->add_to_cart( $product_id, $quantity, $variation_id );
+
+			/**
+			 * Fires before add to cart via ajax.
+			 *
+			 * @param array $args Args.
+			 */
+			do_action( 'wsb_before_add_to_cart', $args );
+
+		  	if ( $args['variation_id'] ) {
+		    	$added_to_cart = WC()->cart->add_to_cart( $args['product_id'], $args['quantity'], $args['variation_id'] );
 		  	} else {
-		   		$added_to_cart = WC()->cart->add_to_cart( $product_id, $quantity );
+		   		$added_to_cart = WC()->cart->add_to_cart( $args['product_id'], $args['quantity'] );
 		  	}
+
+		  	/**
+			 * Fires after add to cart via ajax.
+			 *
+			 * @param boolean $added_to_cart added_to_cart.
+			 */
+		  	do_action( 'wsb_after_add_to_cart', $added_to_cart );
 
 		   	if ( $passed_validation && $added_to_cart && 'publish' === $product_status ) {
 
-	            do_action( 'woocommerce_ajax_added_to_cart', $product_id );
+	            do_action( 'woocommerce_ajax_added_to_cart', $args['product_id'] );
 	            global $woocommerce;
 	            $items = $woocommerce->cart->get_cart();
 
@@ -210,8 +360,14 @@ class WooCommerce_Simple_Buy_Now {
 	            define( 'WOOCOMMERCE_CHECKOUT', true );
 	        }
 
+	        /**
+			 * Filters the template of checkout form after add to cart.
+			 *
+			 * @param string $template template.
+			 */
+	        $template = apply_filters( 'wsb_checkout_template', do_shortcode( '[woocommerce_checkout]' ) );
 			return wp_send_json_success( array(
-			  	'checkout' => do_shortcode( '[woocommerce_checkout]' ),
+			  	'checkout' => $template,
 			), 200 );
 
 		} catch ( \Exception $e ) {
@@ -220,22 +376,14 @@ class WooCommerce_Simple_Buy_Now {
 	}
 
 	/**
-	 * Add class to body tag with check availability page.
-	 *
-	 * @param  array $classes classes.
-	 * @return array
+	 * Reset cart before Buy Now.
 	 */
-	public function wsb_body_class( $classes ) {
-		$button_position = get_option( 'woocommerce_simple_buy_single_product_position' );
+	public function reset_cart() {
+		$reset_cart = get_option( 'woocommerce_simple_buy_single_product_reset_cart' );
 
-		if ( is_product() ) {
-			$classes[] = 'woocommerce-simple-buy-now';
-
-			if ( 'replace' == get_option( 'woocommerce_simple_buy_single_product_position' ) ) {
-				$classes[] = 'woocommerce-simple-buy-now--remove_add_to_cart_btn';
-			}
+		if ( $reset_cart && 'no' !== $reset_cart ) {
+			// Remove all products in cart.
+			WC()->cart->empty_cart();
 		}
-
-		return $classes;
 	}
 }

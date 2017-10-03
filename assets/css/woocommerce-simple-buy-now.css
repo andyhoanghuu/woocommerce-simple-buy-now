@@ -138,3 +138,7 @@
 .woocommerce-simple-buy-now--remove_add_to_cart_btn .single_add_to_cart_button {
 	display: none !important;
 }
+
+.woocommerce-simple-buy-now--remove_quantity_input .cart .quantity {
+	display: none !important;
+}

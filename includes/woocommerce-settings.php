@@ -108,6 +108,18 @@ class WooCommerce_Simple_Buy_Settings_Buy_Now_Settings extends WC_Settings_Page 
 		);
 
 		$settings_array[] = array(
+			'name'     => __( 'Reset Cart before Buy Now', 'woocommerce-simple-buy-now' ),
+			'id'       => 'woocommerce_simple_buy_single_product_reset_cart',
+			'type'     => 'checkbox',
+		);
+
+		$settings_array[] = array(
+			'name'     => __( 'Remove Quantity input', 'woocommerce-simple-buy-now' ),
+			'id'       => 'woocommerce_simple_buy_single_product_remove_quantity',
+			'type'     => 'checkbox',
+		);
+
+		$settings_array[] = array(
 			'type' => 'sectionend',
 			'id'   => 'woocommerce_simple_buy_settings_end',
 		);

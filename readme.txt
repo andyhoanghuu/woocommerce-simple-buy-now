@@ -1,14 +1,14 @@
 === Woocommerce Simple Buy Now ===
 Contributors: ndoublehwp
-Donate link: http://example.com/
-Tags: woocommerce, woocommerce addon, woocommerce simple buy, woocommerce checkout in product page
+Donate link: https://twitter.com/NDoubleHWP
+Tags: woocommerce, woocommerce addon, woocommerce simple buy now, woo simple buy now, woocommerce checkout in product page
 Requires at least: 3.8
 Tested up to: 4.8.2
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WooCommerce Simple Buy Now helps you to add to cart and checkout only one step in single product page.
+WooCommerce Simple Buy Now helps you to add to cart and checkout only one step in the single product page.
 
 == Description ==
 
@@ -29,5 +29,9 @@ Or:
 
 == Changelog ==
 
-= 1.0 =
-* Add WooCommerce Settings.
+= 1.0.1 - 2017-10-03 =
+* Feature - Reset Cart before Buy Now.
+* Feature - Remove Quantity input.
+
+= 1.0.0 - 2017-10-02 =
+* Feature - Add WooCommerce Settings.
