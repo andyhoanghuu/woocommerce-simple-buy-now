@@ -1,0 +1,140 @@
+/* Page wrapper */
+.wsb-wrapper {
+	width: 90%;
+	max-width: 800px;
+	margin: 4em auto;
+	text-align: center;
+}
+
+/* Icons */
+.wsb-icon {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+	fill: currentcolor;
+}
+
+/**
+ * Modals ($wsb-modals)
+ */
+
+/* 1. Ensure this sits above everything when visible */
+.wsb-modal {
+	position: absolute;
+	z-index: 1000;
+	top: 0;
+	left: 0;
+	visibility: hidden;
+	width: 100%;
+	height: 100%;
+}
+
+.wsb-modal.is-visible {
+		visibility: visible;
+}
+
+.wsb-modal-overlay {
+	position: fixed;
+	z-index: 10;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: hsla(0, 0%, 0%, 0.5);
+	visibility: hidden;
+	opacity: 0;
+	transition: visibility 0s linear 0.3s, opacity 0.3s;
+}
+
+.wsb-modal.is-visible .wsb-modal-overlay {
+	opacity: 1;
+	visibility: visible;
+	transition-delay: 0s;
+}
+
+.wsb-modal-wrapper {
+	position: fixed;
+	z-index: 9999;
+	top: 50%;
+	left: 50%;
+	width: 100%;
+	background-color: #fff;
+	box-shadow: 0 0 1.5em hsla(0, 0%, 0%, 0.35);
+	opacity: 1;
+	transform: translateY(-50%);
+	transform: translateX(-50%);
+	height: 100vh;
+	overflow: scroll;
+}
+
+.wsb-modal-transition {
+	transition: all 0.3s 0.12s;
+	transform: translateY(-10%);
+	opacity: 0;
+}
+
+.wsb-modal.is-visible .wsb-modal-transition {
+	transform: translate(-50%, -50%) !important;
+	opacity: 1;
+	width: 100%;
+}
+
+@media (min-width: 992px) {
+	.wsb-modal.is-visible .wsb-modal-transition {
+	  width: 900px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.wsb-modal.is-visible .wsb-modal-transition {
+	  width: 1024px;
+	}
+}
+
+.wsb-modal-header,
+.wsb-modal-content {
+	padding: 1em;
+}
+
+.wsb-modal-header {
+	position: relative;
+	background-color: #fff;
+	box-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.06);
+	border-bottom: 1px solid #e8e8e8;
+}
+
+.wsb-modal-close {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 15px;
+	background: none;
+	border: 0;
+	color: inherit;
+  font-size: 30px;
+}
+
+.wsb-modal-close:hover {
+	color: #ff6029;
+	background-color: transparent;
+}
+
+.wsb-modal-heading {
+	font-size: 1.125em;
+	margin: 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.wsb-modal-content > *:first-child {
+	margin-top: 0;
+}
+
+.wsb-modal-content > *:last-child {
+	margin-bottom: 0;
+}
+
+.woocommerce-simple-buy-now--remove_add_to_cart_btn .single_add_to_cart_button {
+	display: none !important;
+}

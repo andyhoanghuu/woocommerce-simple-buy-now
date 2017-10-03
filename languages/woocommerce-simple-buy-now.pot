@@ -1,0 +1,88 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-02 01:51+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/"
+
+#: woocommerce-simple-buy-now.php:47
+msgid ""
+"Please note that the <strong>WooCommerce Simple Buy</strong> plugin is meant "
+"to be used only with the <strong>WooCommerce</strong> plugin.</p>"
+msgstr ""
+
+#: includes/woocommerce-settings.php:25
+msgid "Before Add To Cart Button"
+msgstr ""
+
+#: includes/woocommerce-settings.php:26
+msgid "After Add To Cart Button"
+msgstr ""
+
+#: includes/woocommerce-settings.php:27
+msgid "Replace Add To Cart Button"
+msgstr ""
+
+#: includes/woocommerce-settings.php:31
+msgid "WC Simple Buy Now"
+msgstr ""
+
+#: includes/woocommerce-settings.php:44
+msgid "General"
+msgstr ""
+
+#: includes/woocommerce-settings.php:81
+msgid "General Settings"
+msgstr ""
+
+#: includes/woocommerce-settings.php:83
+msgid "The following options are used to configure WC Simple Buy Now Actions"
+msgstr ""
+
+#: includes/woocommerce-settings.php:88
+msgid "Enable Simple Buy Now"
+msgstr ""
+
+#: includes/woocommerce-settings.php:94
+msgid "Simple Buy Now Button Position"
+msgstr ""
+
+#: includes/woocommerce-settings.php:95
+msgid ""
+"Where the button need to be added in single page .. before / after / replace"
+msgstr ""
+
+#: includes/woocommerce-settings.php:103 includes/woocommerce-settings.php:104
+msgid "Simple Buy Button Title"
+msgstr ""
+
+#: includes/woocommerce-settings.php:107
+msgid "Buy Now"
+msgstr ""
+
+#. Name of the plugin
+msgid "Woocommerce Simple Buy Now"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Add Buy Now button and add to cart/ checkout in the single product page."
+msgstr ""
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://twitter.com/NDoubleHWP"
+msgstr ""
+
+#. Author of the plugin
+msgid "ndoublehwp"
+msgstr ""
