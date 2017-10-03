@@ -3,7 +3,7 @@
  * Plugin Name:     WooCommerce Simple Buy Now
  * Plugin URI:      ndoublehwp.com
  * Description:     Add Buy Now button and add to cart/ checkout in the single product page.
- * Author:          ndoublehwp
+ * Author:          N'DoubleH
  * Author URI:      https://twitter.com/NDoubleHWP
  * Text Domain:     woocommerce-simple-buy-now
  * Domain Path:     /languages
@@ -11,9 +11,49 @@
  *
  * @package         Woocommerce_Simple_Buy_Now
  */
+
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
+}
+
+/**
+ * WooCommerce Simple Buy Now only works with WordPress 4.6 or later.
+ */
+if ( version_compare( $GLOBALS['wp_version'], '4.6', '<' ) ) {
+	/**
+	 * Prints an update nag after an unsuccessful attempt to active
+	 * WooCommerce Simple Buy Now on WordPress versions prior to 4.6.
+	 *
+	 * @global string $wp_version WordPress version.
+	 */
+	function woocommerce_simple_buy_now_wordpress_upgrade_notice() {
+		$message = sprintf( esc_html__( 'WooCommerce Simple Buy Now requires at least WordPress version 4.6, you are running version %s. Please upgrade and try again!', 'woocommerce-simple-buy-now' ), $GLOBALS['wp_version'] );
+		printf( '<div class="error"><p>%s</p></div>', $message ); // WPCS: XSS OK.
+
+		deactivate_plugins( array( 'woocommerce_simple_buy_now/woocommerce_simple_buy_now.php' ) );
+	}
+
+	add_action( 'admin_notices', 'woocommerce_simple_buy_now_wordpress_upgrade_notice' );
+	return;
+}
+
+/**
+ * And only works with PHP 5.3 or later.
+ */
+if ( version_compare( phpversion(), '5.3', '<' ) ) {
+	/**
+	 * Adds a message for outdate PHP version.
+	 */
+	function woocommerce_simple_buy_now_php_upgrade_notice() {
+		$message = sprintf( esc_html__( 'WooCommerce Simple Buy Now requires at least PHP version 5.3 to work, you are running version %s. Please contact to your administrator to upgrade PHP version!', 'woocommerce-simple-buy-now' ), phpversion() );
+		printf( '<div class="error"><p>%s</p></div>', $message ); // WPCS: XSS OK.
+
+		deactivate_plugins( array( 'woocommerce_simple_buy_now/woocommerce_simple_buy_now.php' ) );
+	}
+
+	add_action( 'admin_notices', 'woocommerce_simple_buy_now_php_upgrade_notice' );
+	return;
 }
 
 if ( defined( 'WOO_SIMPLE_BUY_VERSION' ) ) {
@@ -26,22 +66,22 @@ define( 'WOO_SIMPLE_BUY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 /**
  * The code that runs during plugin activation.
  */
-function activate_woocommerce_simple_buy() {
+function activate_woocommerce_simple_buy_now() {
 }
 
 /**
  * The code that runs during plugin deactivation.
  */
-function deactivate_woocommerce_simple_buy() {
+function deactivate_woocommerce_simple_buy_now() {
 }
 
-register_activation_hook( __FILE__, 'activate_woocommerce_simple_buy' );
-register_deactivation_hook( __FILE__, 'deactivate_woocommerce_simple_buy' );
+register_activation_hook( __FILE__, 'activate_woocommerce_simple_buy_now' );
+register_deactivation_hook( __FILE__, 'deactivate_woocommerce_simple_buy_now' );
 
 /**
  * Admin notice: Require WooCommerce.
  */
-function woocommerce_simple_buy_admin_notice() {
+function woocommerce_simple_buy_now_admin_notice() {
 	if ( ! class_exists( 'WooCommerce' ) ) {
 		echo '<div class="error">';
 		echo  '<p>' . __( 'Please note that the <strong>WooCommerce Simple Buy</strong> plugin is meant to be used only with the <strong>WooCommerce</strong> plugin.</p>', 'woocommerce-simple-buy-now' );
@@ -53,7 +93,7 @@ add_action( 'plugins_loaded', function() {
 	if ( class_exists( 'WooCommerce' ) ) {
 		WooCommerce_Simple_Buy_Now::get_instance();
 	}
-	add_action( 'admin_notices', 'woocommerce_simple_buy_admin_notice', 4 );
+	add_action( 'admin_notices', 'woocommerce_simple_buy_now_admin_notice', 4 );
 } );
 
 /**

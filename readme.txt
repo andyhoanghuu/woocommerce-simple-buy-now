@@ -17,15 +17,25 @@ You only need to create one button `Buy Now` in `WooCommerce > Settings > WC Sim
 
 == Installation ==
 
-* From your WordPress dashboard, Visit `Plugins > Add New`
-* Search for `woocommerce simple buy`. Click 'Install'.
+= Minimum Requirements =
 
-Or:
-* Upload `plugin-name.php` to the `/wp-content/plugins/` directory
+* PHP version 5.3 or greater (PHP 5.6 or greater is recommended)
+* MySQL version 5.0 or greater (MySQL 5.6 or greater is recommended)
+* WooCommerce 3.0
+* WordPress 4.6
 
-* Activate WooCommerce Simple Buy Now from your Plugins page.
-* Visit `WooCommerce > Settings > WC Simple Buy Now` and enable it.
-* Enjoy!
+Visit the [WooCommerce Simple Buy Now repository](https://github.com/ndoublehwp/woocommerce-simple-buy-now/) for a detailed list of server requirements.
+
+= Automatic installation =
+
+Automatic installation is the easiest option as WordPress handles the file transfers itself and you don’t need to leave your web browser. To do an automatic install of WooCommerce Simple Buy Now, log in to your WordPress dashboard, navigate to the Plugins menu and click Add New.
+
+In the search field type “WooCommerce Simple Buy Now” and click Search Plugins. Most importantly of course, you can install it by simply clicking “Install Now”.
+
+= Manual installation =
+
+The manual installation method involves downloading my plugin and uploading it to your webserver via your favourite FTP application. The WordPress codex contains [instructions on how to do this here](https://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation).
+[WooCommerce Simple Buy Now repository](https://github.com/ndoublehwp/woocommerce-simple-buy-now/).
 
 == Changelog ==
 
@@ -35,3 +45,5 @@ Or:
 
 = 1.0.0 - 2017-10-02 =
 * Feature - Add WooCommerce Settings.
+
+[See changelog for all versions](https://github.com/ndoublehwp/woocommerce-simple-buy-now/blob/master/changelog.txt).
