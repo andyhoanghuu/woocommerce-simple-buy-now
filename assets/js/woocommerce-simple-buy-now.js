@@ -3,12 +3,12 @@ jQuery(document).ready(function($) {
 		e.preventDefault();
 
 		var product_id   = $(this).val(),
-				variation_id = $('input[name="variation_id"]').val(),
-				quantity     = $('input[name="quantity"]').val(),
-				data         = 'action=wsb_add_to_cart_ajax&product_id=' + product_id + '&quantity=' + quantity;
+			variation_id = $('input[name="variation_id"]').val(),
+			quantity     = $('input[name="quantity"]').val(),
+			data         = 'action=wsb_add_to_cart_ajax&product_id=' + product_id + '&quantity=' + quantity;
 
 		if (variation_id != '') {
-				data = 'action=wsb_add_to_cart_ajax&product_id=' + product_id + '&variation_id=' + variation_id + '&quantity=' + quantity;
+			data = 'action=wsb_add_to_cart_ajax&product_id=' + product_id + '&variation_id=' + variation_id + '&quantity=' + quantity;
 		}
 
 		if ( $(this).hasClass('wsb-added-to-cart') ) {
@@ -19,16 +19,28 @@ jQuery(document).ready(function($) {
 				type:'POST',
 				data:data,
 				success:function(results) {
-				  $('.wsb-modal-content').html(results.data.checkout);
-				  $('.wsb-modal').addClass('is-visible');
-				  $('.js-wsb-add-to-cart').addClass('wsb-added-to-cart');
+					var $element  = results.data.element,
+						$template = results.data.template,
+						$method   = results.data.method;
+
+					if ( 'append' == $method ) {
+						$($element).append($template);
+					} else if ( 'prepend' == $method ) {
+						$($element).prepend($template);
+					} else {
+				  		$($element).html($template);
+					}
+
+				  	$(document.body).trigger('wsb_checkout_template_added');
+				  	$('.wsb-modal').addClass('is-visible');
+				  	$('.js-wsb-add-to-cart').addClass('wsb-added-to-cart');
 				}
 			});
 		}
 	});
 
 	$('.wsb-modal-toggle').on('click', function(e) {
-	  e.preventDefault();
-	  $('.wsb-modal').removeClass('is-visible');
+	  	e.preventDefault();
+	 	$('.wsb-modal').removeClass('is-visible');
 	});
 });

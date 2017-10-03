@@ -4,7 +4,7 @@ Donate link: https://twitter.com/NDoubleHWP
 Tags: woocommerce, woocommerce addon, woocommerce simple buy now, woo simple buy now, woocommerce checkout in product page
 Requires at least: 3.8
 Tested up to: 4.8.2
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ The manual installation method involves downloading my plugin and uploading it t
 5. Order detail page after checkout.
 
 == Changelog ==
+
+= 1.0.2 - 2017-10-03 =
+* Dev - Add JS hook
 
 = 1.0.1 - 2017-10-03 =
 * Feature - Reset Cart before Buy Now.

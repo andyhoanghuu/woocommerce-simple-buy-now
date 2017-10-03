@@ -7,7 +7,7 @@
  * Author URI:      https://twitter.com/NDoubleHWP
  * Text Domain:     woocommerce-simple-buy-now
  * Domain Path:     /languages
- * Version:         1.0.1
+ * Version:         1.0.2
  *
  * @package         Woocommerce_Simple_Buy_Now
  */
@@ -403,12 +403,14 @@ class WooCommerce_Simple_Buy_Now {
 	        /**
 			 * Filters the template of checkout form after add to cart.
 			 *
-			 * @param string $template template.
+			 * @param array $results results.
 			 */
-	        $template = apply_filters( 'wsb_checkout_template', do_shortcode( '[woocommerce_checkout]' ) );
-			return wp_send_json_success( array(
-			  	'checkout' => $template,
-			), 200 );
+	        $results = apply_filters( 'wsb_checkout_template', array(
+	        	'element'  => '.wsb-modal-content',
+	        	'template' => do_shortcode( '[woocommerce_checkout]' ),
+	        	'method'   => 'html',
+	        ) );
+			return wp_send_json_success( $results, 200 );
 
 		} catch ( \Exception $e ) {
 			return wp_send_json_error( array( 'message' => $e->getMessage() ), 400 );
