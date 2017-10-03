@@ -15,6 +15,13 @@ WooCommerce Simple Buy Now helps you to add to cart and checkout only one step i
 WooCommerce Simple Buy Now helps you to add to cart and checkout only one step in the single product page.
 You only need to create one button `Buy Now` in `WooCommerce > Settings > WC Simple Buy Now` at before / after or replace Add to cart button. A pop-up will be displayed with the content of the checkout page.
 
+= More Information =
+
+* For help use [wordpress.org](http://wordpress.org/support/plugin/puppyfw/) or create issues on [Github](https://github.com/ndoublehwp/woocommerce-simple-buy-now/)
+* Fork or contribute on [Github](https://github.com/ndoublehwp/woocommerce-simple-buy-now/)
+* Follow me [twitter](https://twitter.com/NDoubleHWP/)
+* View my other [WordPress Plugins](http://profiles.wordpress.org/ndoublehwp/)
+
 == Installation ==
 
 = Minimum Requirements =
@@ -36,6 +43,14 @@ In the search field type “WooCommerce Simple Buy Now” and click Search Plugi
 
 The manual installation method involves downloading my plugin and uploading it to your webserver via your favourite FTP application. The WordPress codex contains [instructions on how to do this here](https://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation).
 [WooCommerce Simple Buy Now repository](https://github.com/ndoublehwp/woocommerce-simple-buy-now/).
+
+== Screenshots ==
+
+1. WP Admin > WooCommerce > Settings > WC Simple Buy Now.
+2. Single Product page with Buy Now button.
+3. Pop-up 1.
+4. Pop-up 2.
+5. Order detail page after checkout.
 
 == Changelog ==
 
