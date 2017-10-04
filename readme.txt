@@ -1,4 +1,4 @@
-=== Woocommerce Simple Buy Now ===
+=== WooCommerce Simple Buy Now ===
 Contributors: ndoublehwp
 Donate link: https://twitter.com/NDoubleHWP
 Tags: woocommerce, woocommerce addon, woocommerce simple buy now, woo simple buy now, woocommerce checkout in product page
