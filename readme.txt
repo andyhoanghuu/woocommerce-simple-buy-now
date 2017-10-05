@@ -1,4 +1,4 @@
-=== Woocommerce Simple Buy Now ===
+=== WooCommerce Simple Buy Now ===
 Contributors: ndoublehwp
 Donate link: https://twitter.com/NDoubleHWP
 Tags: woocommerce, woocommerce addon, woocommerce simple buy now, woo simple buy now, woocommerce checkout in product page
@@ -17,7 +17,7 @@ You only need to create one button `Buy Now` in `WooCommerce > Settings > WC Sim
 
 = More Information =
 
-* For help use [wordpress.org](http://wordpress.org/support/plugin/puppyfw/) or create issues on [Github](https://github.com/ndoublehwp/woocommerce-simple-buy-now/)
+* For help use [wordpress.org](http://wordpress.org/support/plugin/woo-simple-buy-now/) or create issues on [Github](https://github.com/ndoublehwp/woocommerce-simple-buy-now/)
 * Fork or contribute on [Github](https://github.com/ndoublehwp/woocommerce-simple-buy-now/)
 * Follow me [twitter](https://twitter.com/NDoubleHWP/)
 * View my other [WordPress Plugins](http://profiles.wordpress.org/ndoublehwp/)
