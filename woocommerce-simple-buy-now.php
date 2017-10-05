@@ -7,7 +7,7 @@
  * Author URI:      https://twitter.com/NDoubleHWP
  * Text Domain:     woocommerce-simple-buy-now
  * Domain Path:     /languages
- * Version:         1.0.2
+ * Version:         1.0.3
  *
  * @package         Woocommerce_Simple_Buy_Now
  */
@@ -91,7 +91,7 @@ function woocommerce_simple_buy_now_admin_notice() {
 
 add_action( 'plugins_loaded', function() {
 	if ( class_exists( 'WooCommerce' ) ) {
-		WooCommerce_Simple_Buy_Now::get_instance();
+		$GLOBALS['woocommerce_simple_buy_now'] = WooCommerce_Simple_Buy_Now::get_instance();
 	}
 	add_action( 'admin_notices', 'woocommerce_simple_buy_now_admin_notice', 4 );
 } );
@@ -302,9 +302,15 @@ class WooCommerce_Simple_Buy_Now {
 	 */
 	public function add_simple_buy_button() {
 		global $product;
+		$args = apply_filters( 'wsb_buy_now_button_args', array(
+			'type'       => 'submit',
+			'class'      => 'js-wsb-add-to-cart wsb-add-to-cart',
+			'title'      => esc_html( $this->get_button_title() ),
+			'attributes' => '',
+		) );
 		?>
-	    	<button type="submit" value="<?php echo esc_attr( $product->get_id() ); ?>" class="js-wsb-add-to-cart wsb-add-to-cart">
-	    		<?php echo esc_html( $this->get_button_title() ); ?>
+	    	<button <?php echo isset( $args['type'] ) ? 'type="' . esc_attr( $args['type'] ) . '"' : ''; ?> value="<?php echo esc_attr( $product->get_id() ); ?>" <?php echo isset( $args['class'] ) ? 'class="' . esc_attr( $args['class'] ) . '"' : ''; ?> <?php echo isset( $args['attributes'] ) ? $args['attributes'] : ''; // WPCS: xss ok. ?>>
+	    		<?php echo isset( $args['title'] ) ? esc_html( $args['title'] ) : ''; ?>
 	    	</button>
 		<?php
 	}
