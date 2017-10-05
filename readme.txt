@@ -1,10 +1,10 @@
-=== WooCommerce Simple Buy Now ===
+﻿=== WooCommerce Simple Buy Now ===
 Contributors: ndoublehwp
 Donate link: https://twitter.com/NDoubleHWP
 Tags: woocommerce, woocommerce addon, woocommerce simple buy now, woo simple buy now, woocommerce checkout in product page
 Requires at least: 3.8
 Tested up to: 4.8.2
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
