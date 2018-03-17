@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name:     WooCommerce Simple Buy Now
- * Plugin URI:      ndoublehwp.com
+ * Plugin URI:      http://ndoublehwp.com/
  * Description:     Add Buy Now button and add to cart/ checkout in the single product page.
  * Author:          N'DoubleH
- * Author URI:      https://twitter.com/NDoubleHWP
+ * Author URI:      http://ndoublehwp.com/
  * Text Domain:     woocommerce-simple-buy-now
  * Domain Path:     /languages
- * Version:         1.0.3
+ * Version:         1.0.4
  *
  * @package         Woocommerce_Simple_Buy_Now
  */
@@ -182,6 +182,10 @@ class WooCommerce_Simple_Buy_Now {
 		wp_localize_script( 'woocommerce-simple-buy-now', 'woocommerce_simple_buy_now', array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 		) );
+
+		if ( is_product() ) {
+			wp_enqueue_script( 'wc-checkout' );
+		}
 
 		/**
 		 * Fires enqueue scripts.

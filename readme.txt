@@ -1,10 +1,9 @@
 ﻿=== WooCommerce Simple Buy Now ===
 Contributors: ndoublehwp
-Donate link: https://twitter.com/NDoubleHWP
 Tags: woocommerce, woocommerce addon, woocommerce simple buy now, woo simple buy now, woocommerce checkout in product page
-Requires at least: 3.8
-Tested up to: 4.8.2
-Stable tag: 1.0.3
+Requires at least: 4.6
+Tested up to: 4.9.4
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,6 +20,7 @@ You only need to create one button `Buy Now` in `WooCommerce > Settings > WC Sim
 * Fork or contribute on [Github](https://github.com/ndoublehwp/woocommerce-simple-buy-now/)
 * Follow me [twitter](https://twitter.com/NDoubleHWP/)
 * View my other [WordPress Plugins](http://profiles.wordpress.org/ndoublehwp/)
+* Contact me and hire me [Website](http://ndoublehwp.com/)
 
 == Installation ==
 
@@ -53,6 +53,12 @@ The manual installation method involves downloading my plugin and uploading it t
 5. Order detail page after checkout.
 
 == Changelog ==
+
+= 1.0.4 - 2018-03-17 =
+* Fixes - Add checkout js
+
+= 1.0.3 - 2017-12-03 =
+* Fixes - Minor bugs
 
 = 1.0.2 - 2017-10-03 =
 * Dev - Add JS hook
