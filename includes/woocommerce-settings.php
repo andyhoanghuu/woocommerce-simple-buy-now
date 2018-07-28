@@ -21,14 +21,8 @@ class WooCommerce_Simple_Buy_Settings_Buy_Now_Settings extends WC_Settings_Page 
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->show_position = array(
-			'before'  => __( 'Before Add To Cart Button', 'woocommerce-simple-buy-now' ),
-			'after'   => __( 'After Add To Cart Button', 'woocommerce-simple-buy-now' ),
-			'replace' => __( 'Replace Add To Cart Button', 'woocommerce-simple-buy-now' ),
-		);
-
 		$this->id    = 'wc_simple_buy_settings';
-		$this->label = __( 'WC Simple Buy Now', 'woocommerce-simple-buy-now' );
+		$this->label = esc_html__( 'WC Simple Buy Now', 'woocommerce-simple-buy-now' );
 
 		add_filter( 'woocommerce_settings_tabs_array', array( $this, 'add_settings_page' ), 20 );
 		add_filter( 'woocommerce_sections_' . $this->id, array( $this, 'output_sections' ) );
@@ -37,13 +31,40 @@ class WooCommerce_Simple_Buy_Settings_Buy_Now_Settings extends WC_Settings_Page 
 	}
 
 	/**
-	 * Get sections
+	 * Gets sections
+	 *
+	 * @return array
 	 */
 	public function get_sections() {
 		$sections = array(
-		    ''            => __( 'General', 'woocommerce-simple-buy-now' ),
+		    '' => esc_html__( 'General', 'woocommerce-simple-buy-now' ),
 		);
 		return apply_filters( 'woocommerce_get_sections_' . $this->id, $sections );
+	}
+
+	/**
+	 * Gets button positions.
+	 *
+	 * @return array
+	 */
+	public function get_positions() {
+		return apply_filters( 'woocommerce_simple_buy_get_postitions', array(
+			'before'  => esc_html__( 'Before Add To Cart Button', 'woocommerce-simple-buy-now' ),
+			'after'   => esc_html__( 'After Add To Cart Button', 'woocommerce-simple-buy-now' ),
+			'replace' => esc_html__( 'Replace Add To Cart Button', 'woocommerce-simple-buy-now' ),
+		) );
+	}
+
+	/**
+	 * Gets redirects.
+	 *
+	 * @return array
+	 */
+	public function get_redirects() {
+		return apply_filters( 'woocommerce_simple_buy_get_redirects', array(
+			'popup'    => esc_html__( 'Use pop-up', 'woocommerce-simple-buy-now' ),
+			'checkout' => esc_html__( 'Redirect to the checkout page (skip the cart page)', 'woocommerce-simple-buy-now' ),
+		) );
 	}
 
 	/**
@@ -57,8 +78,9 @@ class WooCommerce_Simple_Buy_Settings_Buy_Now_Settings extends WC_Settings_Page 
 	}
 
 	/**
-	 * Get settings.
-	 * @param  array $section section
+	 * Gets settings.
+	 *
+	 * @param  array $section section.
 	 * @return array
 	 */
 	public function get_settings( $section = null ) {
@@ -73,48 +95,63 @@ class WooCommerce_Simple_Buy_Settings_Buy_Now_Settings extends WC_Settings_Page 
 		return $settings;
 	}
 
-
-	public function get_general(){
+	/**
+	 * Gets general settings.
+	 *
+	 * @return array
+	 */
+	public function get_general() {
 		$settings_array = array();
 
 		$settings_array[] = array(
-			'name' => __( 'General Settings', 'woocommerce-simple-buy-now' ),
+			'name' => esc_html__( 'General Settings', 'woocommerce-simple-buy-now' ),
 			'type' => 'title',
-			'desc' => __( 'The following options are used to configure WC Simple Buy Now Actions','woocommerce-simple-buy-now' ),
+			'desc' => esc_html__( 'The following options are used to configure WC Simple Buy Now Actions','woocommerce-simple-buy-now' ),
 			'id'   => 'woocommerce_simple_buy_settings_start',
 		);
 
 		$settings_array[] = array(
-			'name'     => __( 'Enable Simple Buy Now', 'woocommerce-simple-buy-now' ),
+			'name'     => esc_html__( 'Enable Simple Buy Now', 'woocommerce-simple-buy-now' ),
 			'id'       => 'woocommerce_simple_buy_single_product_enable',
 			'type'     => 'checkbox',
+			'default'  => 'yes',
 		);
 
 		$settings_array[] = array(
-			'name'     => __( 'Simple Buy Now Button Position', 'woocommerce-simple-buy-now' ),
-			'desc_tip' => __( 'Where the button need to be added in single page .. before / after / replace', 'woocommerce-simple-buy-now' ),
+			'name'     => esc_html__( 'Redirect', 'woocommerce-simple-buy-now' ),
+			'desc_tip' => esc_html__( 'Use pop-up or redirect to the checkout page', 'woocommerce-simple-buy-now' ),
+			'id'       => 'woocommerce_simple_buy_redirect',
+			'type'     => 'radio',
+			'default'  => 'popup',
+			'options'  => $this->get_redirects(),
+		);
+
+		$settings_array[] = array(
+			'name'     => esc_html__( 'Simple Buy Now Button Position', 'woocommerce-simple-buy-now' ),
+			'desc_tip' => esc_html__( 'Where the button need to be added in single page .. before / after / replace', 'woocommerce-simple-buy-now' ),
 			'id'       => 'woocommerce_simple_buy_single_product_position',
 			'type'     => 'select',
 			'class'    => 'chosen_select',
-			'options'  => $this->show_position,
+			'default'  => 'before',
+			'options'  => $this->get_positions(),
 		);
 
 		$settings_array[] = array(
-			'name'     => __( 'Simple Buy Button Title', 'woocommerce-simple-buy-now' ),
-			'desc_tip' => __( 'Simple Buy Button Title', 'woocommerce-simple-buy-now' ),
+			'name'     => esc_html__( 'Simple Buy Button Title', 'woocommerce-simple-buy-now' ),
+			'desc_tip' => esc_html__( 'Simple Buy Button Title', 'woocommerce-simple-buy-now' ),
 			'id'       => 'woocommerce_simple_buy_single_product_button',
 			'type'     => 'text',
-			'default'  => __( 'Buy Now', 'woocommerce-simple-buy-now' ),
+			'default'  => esc_html__( 'Buy Now', 'woocommerce-simple-buy-now' ),
 		);
 
 		$settings_array[] = array(
-			'name'     => __( 'Reset Cart before Buy Now', 'woocommerce-simple-buy-now' ),
+			'name'     => esc_html__( 'Reset Cart before Buy Now', 'woocommerce-simple-buy-now' ),
 			'id'       => 'woocommerce_simple_buy_single_product_reset_cart',
 			'type'     => 'checkbox',
 		);
 
 		$settings_array[] = array(
-			'name'     => __( 'Remove Quantity input', 'woocommerce-simple-buy-now' ),
+			'name'     => esc_html__( 'Remove Quantity input', 'woocommerce-simple-buy-now' ),
 			'id'       => 'woocommerce_simple_buy_single_product_remove_quantity',
 			'type'     => 'checkbox',
 		);

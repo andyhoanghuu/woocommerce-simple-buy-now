@@ -1,9 +1,9 @@
-﻿=== WooCommerce Simple Buy Now ===
+=== WooCommerce Simple Buy Now ===
 Contributors: ndoublehwp
 Tags: woocommerce, woocommerce addon, woocommerce simple buy now, woo simple buy now, woocommerce checkout in product page
 Requires at least: 4.6
-Tested up to: 4.9.4
-Stable tag: 1.0.4
+Tested up to: 4.9.7
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,14 +13,17 @@ WooCommerce Simple Buy Now helps you to add to cart and checkout only one step i
 
 WooCommerce Simple Buy Now helps you to add to cart and checkout only one step in the single product page.
 You only need to create one button `Buy Now` in `WooCommerce > Settings > WC Simple Buy Now` at before / after or replace Add to cart button. A pop-up will be displayed with the content of the checkout page.
+New*: You can select to Redirect to checkout page from v1.0.5
+
 
 = More Information =
 
 * For help use [wordpress.org](http://wordpress.org/support/plugin/woo-simple-buy-now/) or create issues on [Github](https://github.com/ndoublehwp/woocommerce-simple-buy-now/)
-* Fork or contribute on [Github](https://github.com/ndoublehwp/woocommerce-simple-buy-now/)
-* Follow me [twitter](https://twitter.com/NDoubleHWP/)
+* Fork or contribute on [GitHub](https://github.com/ndoublehwp/woocommerce-simple-buy-now/), I would be happy if you leave a star for this GitHub repository
+* Follow me [Twitter](https://twitter.com/NDoubleHWP/)
 * View my other [WordPress Plugins](http://profiles.wordpress.org/ndoublehwp/)
 * Contact me and hire me [Website](http://ndoublehwp.com/)
+* I would be happy if you leave a review :) [Review](https://wordpress.org/support/plugin/woo-simple-buy-now/reviews/)
 
 == Installation ==
 
@@ -54,11 +57,14 @@ The manual installation method involves downloading my plugin and uploading it t
 
 == Changelog ==
 
-= 1.0.4 - 2018-03-17 =
-* Fixes - Add checkout js
+= 1.0.5 - 2018-07-28 =
+* Feature - Add redirect setttings (use pop-up or redirect to the checkout page).
 
-= 1.0.3 - 2017-12-03 =
-* Fixes - Minor bugs
+= 1.0.4 - 2018-03-17 =
+* Fix - Checkout java scripts
+
+= 1.0.3 - 2017-10-05 =
+* Dev - Add PHP hook
 
 = 1.0.2 - 2017-10-03 =
 * Dev - Add JS hook

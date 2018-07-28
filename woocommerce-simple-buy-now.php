@@ -7,7 +7,7 @@
  * Author URI:      http://ndoublehwp.com/
  * Text Domain:     woocommerce-simple-buy-now
  * Domain Path:     /languages
- * Version:         1.0.4
+ * Version:         1.0.5
  *
  * @package         Woocommerce_Simple_Buy_Now
  */
@@ -60,7 +60,7 @@ if ( defined( 'WOO_SIMPLE_BUY_VERSION' ) ) {
 	return;
 }
 
-define( 'WOO_SIMPLE_BUY_VERSION', '1.0.0' );
+define( 'WOO_SIMPLE_BUY_VERSION', '1.0.5' );
 define( 'WOO_SIMPLE_BUY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WOO_SIMPLE_BUY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 /**
@@ -84,7 +84,7 @@ register_deactivation_hook( __FILE__, 'deactivate_woocommerce_simple_buy_now' );
 function woocommerce_simple_buy_now_admin_notice() {
 	if ( ! class_exists( 'WooCommerce' ) ) {
 		echo '<div class="error">';
-		echo  '<p>' . __( 'Please note that the <strong>WooCommerce Simple Buy</strong> plugin is meant to be used only with the <strong>WooCommerce</strong> plugin.</p>', 'woocommerce-simple-buy-now' );
+		echo  '<p>' . __( 'Please note that the <strong>WooCommerce Simple Buy Now</strong> plugin is meant to be used only with the <strong>WooCommerce</strong> plugin.</p>', 'woocommerce-simple-buy-now' );
 		echo '</div>';
 	}
 }
@@ -112,7 +112,14 @@ class WooCommerce_Simple_Buy_Now {
 	 *
 	 * @var string
 	 */
-	private $enable = '';
+	private $enabled = 'yes';
+
+	/**
+	 * Redirect.
+	 *
+	 * @var string
+	 */
+	private $redirect = 'popup';
 
 	/**
 	 * Position.
@@ -137,16 +144,16 @@ class WooCommerce_Simple_Buy_Now {
 	 * Actions setup
 	 */
 	public function __construct() {
-		$enable          = get_option( 'woocommerce_simple_buy_single_product_enable' );
-		$button_position = get_option( 'woocommerce_simple_buy_single_product_position' );
-
-		if ( $this->is_enable() ) {
+		if ( $this->is_enabled() ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 20 );
 			add_action( 'plugins_loaded', array( $this, 'i18n' ), 3 );
 			add_action( 'wp_ajax_wsb_add_to_cart_ajax', array( $this, 'add_to_cart_ajax' ) );
 			add_action( 'wp_ajax_nopriv_wsb_add_to_cart_ajax', array( $this, 'add_to_cart_ajax' ) );
-			add_action( 'wp_footer', array( $this, 'add_checkout_template' ) );
-			add_filter( 'body_class', array( $this, 'wsb_body_class' ) );
+			add_filter( 'body_class', array( $this, 'body_class' ) );
+
+			if ( ! $this->is_redirect() ) {
+				add_action( 'wp_footer', array( $this, 'add_checkout_template' ) );
+			}
 
 			if ( $this->is_before_button() ) {
 				add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'add_simple_buy_button' ) );
@@ -208,7 +215,7 @@ class WooCommerce_Simple_Buy_Now {
 	 * @param  array $classes classes.
 	 * @return array
 	 */
-	public function wsb_body_class( $classes ) {
+	public function body_class( $classes ) {
 		$button_position = get_option( 'woocommerce_simple_buy_single_product_position' );
 
 		if ( is_product() ) {
@@ -228,11 +235,13 @@ class WooCommerce_Simple_Buy_Now {
 
 	/**
 	 * Is enable.
+	 *
+	 * @return boolean
 	 */
-	public function is_enable() {
-		$this->enable = get_option( 'woocommerce_simple_buy_single_product_enable' );
+	public function is_enabled() {
+		$enabled = get_option( 'woocommerce_simple_buy_single_product_enable', $this->enabled );
 
-		if ( $this->enable && 'no' !== $this->enable ) {
+		if ( $enabled && 'no' !== $enabled ) {
 			return true;
 		}
 
@@ -240,7 +249,25 @@ class WooCommerce_Simple_Buy_Now {
 	}
 
 	/**
-	 * Get button title.
+	 * Gets redirect.
+	 *
+	 * @return string
+	 */
+	public function get_redirect() {
+		return get_option( 'woocommerce_simple_buy_redirect', $this->redirect );
+	}
+
+	/**
+	 * Gets position button.
+	 *
+	 * @return string
+	 */
+	public function get_position() {
+		return get_option( 'woocommerce_simple_buy_single_product_position', $this->position );
+	}
+
+	/**
+	 * Gets button title.
 	 *
 	 * @return string
 	 */
@@ -255,12 +282,21 @@ class WooCommerce_Simple_Buy_Now {
 	}
 
 	/**
-	 * Get position button.
+	 * Is use pop-up?
+	 *
+	 * @return boolean
 	 */
-	public function get_position() {
-		$this->position = get_option( 'woocommerce_simple_buy_single_product_position', $this->position );
+	public function is_popup() {
+		return ( 'popup' === $this->get_redirect() );
+	}
 
-		return $this->position;
+	/**
+	 * Is redirect to the checkout page?
+	 *
+	 * @return boolean
+	 */
+	public function is_redirect() {
+		return ( 'checkout' === $this->get_redirect() );
 	}
 
 	/**
@@ -306,16 +342,35 @@ class WooCommerce_Simple_Buy_Now {
 	 */
 	public function add_simple_buy_button() {
 		global $product;
+
+		$btn_class = apply_filters( 'wsb_single_product_button_classes', array(
+			'wsb-button',
+			'js-wsb-add-to-cart',
+		) );
+
 		$args = apply_filters( 'wsb_buy_now_button_args', array(
 			'type'       => 'submit',
-			'class'      => 'js-wsb-add-to-cart wsb-add-to-cart',
+			'class'      => $btn_class,
 			'title'      => esc_html( $this->get_button_title() ),
 			'attributes' => '',
-		) );
+		), $this->get_redirect(), $this->get_position() );
+
+		$this->button_template( $args );
+	}
+
+	/**
+	 * Button template.
+	 *
+	 * @param  array $args arguments.
+	 * @return void
+	 */
+	public function button_template( $args ) {
+		global $product;
+
 		?>
-	    	<button <?php echo isset( $args['type'] ) ? 'type="' . esc_attr( $args['type'] ) . '"' : ''; ?> value="<?php echo esc_attr( $product->get_id() ); ?>" <?php echo isset( $args['class'] ) ? 'class="' . esc_attr( $args['class'] ) . '"' : ''; ?> <?php echo isset( $args['attributes'] ) ? $args['attributes'] : ''; // WPCS: xss ok. ?>>
-	    		<?php echo isset( $args['title'] ) ? esc_html( $args['title'] ) : ''; ?>
-	    	</button>
+		<button <?php echo isset( $args['type'] ) ? 'type="' . esc_attr( $args['type'] ) . '"' : ''; ?> value="<?php echo esc_attr( $product->get_id() ); ?>" class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $args['class'] ) ) ); ?>"  <?php echo isset( $args['attributes'] ) ? $args['attributes'] : ''; // WPCS: xss ok. ?>>
+			<?php echo isset( $args['title'] ) ? esc_html( $args['title'] ) : ''; ?>
+		</button>
 		<?php
 	}
 
@@ -327,27 +382,27 @@ class WooCommerce_Simple_Buy_Now {
 			return;
 		}
 		?>
-			<div class="wsb-modal">
-			    <div class="wsb-modal-overlay wsb-modal-toggle"></div>
-			    <div class="wsb-modal-wrapper wsb-modal-transition">
+		<div class="wsb-modal">
+			<div class="wsb-modal-overlay wsb-modal-toggle"></div>
+			<div class="wsb-modal-wrapper wsb-modal-transition">
 
-			    	<?php do_action( 'wsb_modal_header_content' ); ?>
+				<?php do_action( 'wsb_modal_header_content' ); ?>
 
-			      	<div class="wsb-modal-header">
-			        	<button class="wsb-modal-close wsb-modal-toggle">
-			        		<span aria-hidden="true">×</span>
-			        	</button>
-			      	</div>
-			      	<div class="wsb-modal-body">
-			      		<?php do_action( 'wsb_before_modal_body_content' ); ?>
+				<div class="wsb-modal-header">
+					<button class="wsb-modal-close wsb-modal-toggle">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="wsb-modal-body">
+					<?php do_action( 'wsb_before_modal_body_content' ); ?>
 
-				        <div class="wsb-modal-content"></div>
+					<div class="wsb-modal-content"></div>
 
-				        <?php do_action( 'wsb_after_modal_body_content' ); ?>
+					<?php do_action( 'wsb_after_modal_body_content' ); ?>
 
-			      	</div>
-			    </div>
-		 	</div>
+				</div>
+			</div>
+		</div>
 		<?php
 	}
 
@@ -355,9 +410,9 @@ class WooCommerce_Simple_Buy_Now {
 	 * Add product to cart via ajax function.
 	 */
 	public function add_to_cart_ajax() {
-		$product_id        = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_POST['product_id'] ) );
-		$quantity          = empty( $_POST['quantity'] ) ? 1 : wc_stock_amount( $_POST['quantity'] );
-		$variation_id      = isset( $_POST['variation_id'] ) ? $_POST['variation_id'] : '';
+		$product_id   = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_POST['product_id'] ) );
+		$quantity     = empty( $_POST['quantity'] ) ? 1 : wc_stock_amount( $_POST['quantity'] );
+		$variation_id = isset( $_POST['variation_id'] ) ? $_POST['variation_id'] : '';
 
 		$args = array(
 			'product_id'   => $product_id,
@@ -384,42 +439,45 @@ class WooCommerce_Simple_Buy_Now {
 			 */
 			do_action( 'wsb_before_add_to_cart', $args );
 
-		  	if ( $args['variation_id'] ) {
-		    	$added_to_cart = WC()->cart->add_to_cart( $args['product_id'], $args['quantity'], $args['variation_id'] );
-		  	} else {
-		   		$added_to_cart = WC()->cart->add_to_cart( $args['product_id'], $args['quantity'] );
-		  	}
+			if ( $args['variation_id'] ) {
+				$added_to_cart = WC()->cart->add_to_cart( $args['product_id'], $args['quantity'], $args['variation_id'] );
+			} else {
+				$added_to_cart = WC()->cart->add_to_cart( $args['product_id'], $args['quantity'] );
+			}
 
-		  	/**
+			/**
 			 * Fires after add to cart via ajax.
 			 *
 			 * @param boolean $added_to_cart added_to_cart.
 			 */
-		  	do_action( 'wsb_after_add_to_cart', $added_to_cart );
+			do_action( 'wsb_after_add_to_cart', $added_to_cart );
 
-		   	if ( $passed_validation && $added_to_cart && 'publish' === $product_status ) {
+			if ( $passed_validation && $added_to_cart && 'publish' === $product_status ) {
 
-	            do_action( 'woocommerce_ajax_added_to_cart', $args['product_id'] );
-	            global $woocommerce;
-	            $items = $woocommerce->cart->get_cart();
+				do_action( 'woocommerce_ajax_added_to_cart', $args['product_id'] );
+				global $woocommerce;
+				$items = $woocommerce->cart->get_cart();
 
-	            wc_setcookie( 'woocommerce_items_in_cart', count( $items ) );
-	            wc_setcookie( 'woocommerce_cart_hash', md5( json_encode( $items ) ) );
+				wc_setcookie( 'woocommerce_items_in_cart', count( $items ) );
+				wc_setcookie( 'woocommerce_cart_hash', md5( json_encode( $items ) ) );
 
-	            do_action( 'woocommerce_set_cart_cookies', true );
-	            define( 'WOOCOMMERCE_CHECKOUT', true );
-	        }
+				do_action( 'woocommerce_set_cart_cookies', true );
+				define( 'WOOCOMMERCE_CHECKOUT', true );
+			}
 
-	        /**
+			/**
 			 * Filters the template of checkout form after add to cart.
 			 *
 			 * @param array $results results.
 			 */
-	        $results = apply_filters( 'wsb_checkout_template', array(
-	        	'element'  => '.wsb-modal-content',
-	        	'template' => do_shortcode( '[woocommerce_checkout]' ),
-	        	'method'   => 'html',
-	        ) );
+			$results = apply_filters( 'wsb_checkout_template', array(
+				'element'      => '.wsb-modal-content',
+				'redirect'     => $this->is_redirect(),
+				'checkout_url' => esc_url( wc_get_checkout_url() ),
+				'template'     => do_shortcode( '[woocommerce_checkout]' ),
+				'method'       => 'html',
+			) );
+
 			return wp_send_json_success( $results, 200 );
 
 		} catch ( \Exception $e ) {

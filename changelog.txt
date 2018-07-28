@@ -1,5 +1,11 @@
 == Changelog ==
 
+= 1.0.5 - 2018-07-28 =
+* Feature - Add redirect setttings (use pop-up or redirect to the checkout page).
+
+= 1.0.4 - 2018-03-17 =
+* Fix - Checkout java scripts
+
 = 1.0.3 - 2017-10-05 =
 * Dev - Add PHP hook
 

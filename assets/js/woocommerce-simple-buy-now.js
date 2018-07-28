@@ -19,31 +19,40 @@ jQuery(document).ready(function($) {
 				type:'POST',
 				data:data,
 				success:function(results) {
-					var $element  = results.data.element,
-						$template = results.data.template,
-						$method   = results.data.method;
+					var element      = results.data.element,
+						template     = results.data.template,
+						redirect     = results.data.redirect,
+						checkout_url = results.data.checkout_url,
+						method       = results.data.method;
 
-					if ( 'append' == $method ) {
-						$($element).append($template);
-					} else if ( 'prepend' == $method ) {
-						$($element).prepend($template);
+					if ( 'append' == method ) {
+						$(element).append(template);
+					} else if ( 'prepend' == method ) {
+						$(element).prepend(template);
 					} else {
-				  		$($element).html($template);
+						$(element).html(template);
 					}
-					// re-call checkout js.
-					woocommerce_checkout_js();
 
-				  	$(document.body).trigger('wsb_checkout_template_added');
-				  	$('.wsb-modal').addClass('is-visible');
-				  	$('.js-wsb-add-to-cart').addClass('wsb-added-to-cart');
+					if (redirect) {
+						console.log(1)
+						// Redirect to the checkout page.
+						$(location).attr("href", checkout_url);
+					} else {
+						// Re-call checkout js.
+						woocommerce_checkout_js();
+
+						$(document.body).trigger('wsb_checkout_template_added');
+						$('.wsb-modal').addClass('is-visible');
+						$('.js-wsb-add-to-cart').addClass('wsb-added-to-cart');
+					}
 				}
 			});
 		}
 	});
 
 	$('.wsb-modal-toggle').on('click', function(e) {
-	  	e.preventDefault();
-	 	$('.wsb-modal').removeClass('is-visible');
+		e.preventDefault();
+		$('.wsb-modal').removeClass('is-visible');
 	});
 
 	function woocommerce_checkout_js() {
@@ -291,18 +300,18 @@ jQuery(document).ready(function($) {
 					update_shipping_method: true
 				};
 
-				var country			 = $( '#billing_country' ).val(),
-					state			 = $( '#billing_state' ).val(),
-					postcode		 = $( 'input#billing_postcode' ).val(),
-					city			 = $( '#billing_city' ).val(),
-					address			 = $( 'input#billing_address_1' ).val(),
-					address_2		 = $( 'input#billing_address_2' ).val(),
-					s_country		 = country,
-					s_state			 = state,
-					s_postcode		 = postcode,
-					s_city			 = city,
-					s_address		 = address,
-					s_address_2		 = address_2,
+				var country          = $( '#billing_country' ).val(),
+					state            = $( '#billing_state' ).val(),
+					postcode         = $( 'input#billing_postcode' ).val(),
+					city             = $( '#billing_city' ).val(),
+					address          = $( 'input#billing_address_1' ).val(),
+					address_2        = $( 'input#billing_address_2' ).val(),
+					s_country        = country,
+					s_state          = state,
+					s_postcode       = postcode,
+					s_city           = city,
+					s_address        = address,
+					s_address_2      = address_2,
 					$required_inputs = $( wc_checkout_form.$checkout_form ).find( '.address-field.validate-required:visible' ),
 					has_full_address = true;
 
@@ -315,12 +324,12 @@ jQuery(document).ready(function($) {
 				}
 
 				if ( $( '#ship-to-different-address' ).find( 'input' ).is( ':checked' ) ) {
-					s_country		 = $( '#shipping_country' ).val();
-					s_state			 = $( '#shipping_state' ).val();
-					s_postcode		 = $( 'input#shipping_postcode' ).val();
-					s_city			 = $( '#shipping_city' ).val();
-					s_address		 = $( 'input#shipping_address_1' ).val();
-					s_address_2		 = $( 'input#shipping_address_2' ).val();
+					s_country        = $( '#shipping_country' ).val();
+					s_state          = $( '#shipping_state' ).val();
+					s_postcode       = $( 'input#shipping_postcode' ).val();
+					s_city           = $( '#shipping_city' ).val();
+					s_address        = $( 'input#shipping_address_1' ).val();
+					s_address_2      = $( 'input#shipping_address_2' ).val();
 				}
 
 				var data = {
@@ -361,10 +370,10 @@ jQuery(document).ready(function($) {
 				});
 
 				wc_checkout_form.xhr = $.ajax({
-					type:		'POST',
-					url:		wc_checkout_params.wc_ajax_url.toString().replace( '%%endpoint%%', 'update_order_review' ),
-					data:		data,
-					success:	function( data ) {
+					type:       'POST',
+					url:        wc_checkout_params.wc_ajax_url.toString().replace( '%%endpoint%%', 'update_order_review' ),
+					data:       data,
+					success:    function( data ) {
 
 						// Reload the page if requested
 						if ( true === data.reload ) {
@@ -504,11 +513,11 @@ jQuery(document).ready(function($) {
 					} );
 
 					$.ajax({
-						type:		'POST',
-						url:		wc_checkout_params.checkout_url,
-						data:		$form.serialize(),
+						type:       'POST',
+						url:        wc_checkout_params.checkout_url,
+						data:       $form.serialize(),
 						dataType:   'json',
-						success:	function( result ) {
+						success:    function( result ) {
 							try {
 								if ( 'success' === result.result ) {
 									if ( -1 === result.redirect.indexOf( 'https://' ) || -1 === result.redirect.indexOf( 'http://' ) ) {
@@ -541,7 +550,7 @@ jQuery(document).ready(function($) {
 								}
 							}
 						},
-						error:	function( jqXHR, textStatus, errorThrown ) {
+						error:  function( jqXHR, textStatus, errorThrown ) {
 							wc_checkout_form.submit_error( '<div class="woocommerce-error">' + errorThrown + '</div>' );
 						}
 					});
@@ -607,15 +616,15 @@ jQuery(document).ready(function($) {
 				});
 
 				var data = {
-					security:		wc_checkout_params.apply_coupon_nonce,
-					coupon_code:	$form.find( 'input[name="coupon_code"]' ).val()
+					security:       wc_checkout_params.apply_coupon_nonce,
+					coupon_code:    $form.find( 'input[name="coupon_code"]' ).val()
 				};
 
 				$.ajax({
-					type:		'POST',
-					url:		wc_checkout_params.wc_ajax_url.toString().replace( '%%endpoint%%', 'apply_coupon' ),
-					data:		data,
-					success:	function( code ) {
+					type:       'POST',
+					url:        wc_checkout_params.wc_ajax_url.toString().replace( '%%endpoint%%', 'apply_coupon' ),
+					data:       data,
+					success:    function( code ) {
 						$( '.woocommerce-error, .woocommerce-message' ).remove();
 						$form.removeClass( 'processing' ).unblock();
 

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-02 01:51+0000\n"
+"POT-Creation-Date: 2018-07-28 13:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -14,63 +14,102 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/"
 
-#: woocommerce-simple-buy-now.php:47
+#: woocommerce-simple-buy-now.php:31
+#, php-format
 msgid ""
-"Please note that the <strong>WooCommerce Simple Buy</strong> plugin is meant "
-"to be used only with the <strong>WooCommerce</strong> plugin.</p>"
+"WooCommerce Simple Buy Now requires at least WordPress version 4.6, you are "
+"running version %s. Please upgrade and try again!"
+msgstr ""
+
+#: woocommerce-simple-buy-now.php:49
+#, php-format
+msgid ""
+"WooCommerce Simple Buy Now requires at least PHP version 5.3 to work, you "
+"are running version %s. Please contact to your administrator to upgrade PHP "
+"version!"
+msgstr ""
+
+#: woocommerce-simple-buy-now.php:87
+msgid ""
+"Please note that the <strong>WooCommerce Simple Buy Now</strong> plugin is "
+"meant to be used only with the <strong>WooCommerce</strong> plugin.</p>"
+msgstr ""
+
+#: woocommerce-simple-buy-now.php:275 includes/woocommerce-settings.php:144
+msgid "Buy Now"
 msgstr ""
 
 #: includes/woocommerce-settings.php:25
-msgid "Before Add To Cart Button"
-msgstr ""
-
-#: includes/woocommerce-settings.php:26
-msgid "After Add To Cart Button"
-msgstr ""
-
-#: includes/woocommerce-settings.php:27
-msgid "Replace Add To Cart Button"
-msgstr ""
-
-#: includes/woocommerce-settings.php:31
 msgid "WC Simple Buy Now"
 msgstr ""
 
-#: includes/woocommerce-settings.php:44
+#: includes/woocommerce-settings.php:40
 msgid "General"
 msgstr ""
 
-#: includes/woocommerce-settings.php:81
+#: includes/woocommerce-settings.php:52
+msgid "Before Add To Cart Button"
+msgstr ""
+
+#: includes/woocommerce-settings.php:53
+msgid "After Add To Cart Button"
+msgstr ""
+
+#: includes/woocommerce-settings.php:54
+msgid "Replace Add To Cart Button"
+msgstr ""
+
+#: includes/woocommerce-settings.php:65
+msgid "Use pop-up"
+msgstr ""
+
+#: includes/woocommerce-settings.php:66
+msgid "Redirect to the checkout page (skip the cart page)"
+msgstr ""
+
+#: includes/woocommerce-settings.php:107
 msgid "General Settings"
 msgstr ""
 
-#: includes/woocommerce-settings.php:83
+#: includes/woocommerce-settings.php:109
 msgid "The following options are used to configure WC Simple Buy Now Actions"
 msgstr ""
 
-#: includes/woocommerce-settings.php:88
+#: includes/woocommerce-settings.php:114
 msgid "Enable Simple Buy Now"
 msgstr ""
 
-#: includes/woocommerce-settings.php:94
+#: includes/woocommerce-settings.php:121
+msgid "Redirect"
+msgstr ""
+
+#: includes/woocommerce-settings.php:122
+msgid "Use pop-up or redirect to the checkout page"
+msgstr ""
+
+#: includes/woocommerce-settings.php:130
 msgid "Simple Buy Now Button Position"
 msgstr ""
 
-#: includes/woocommerce-settings.php:95
+#: includes/woocommerce-settings.php:131
 msgid ""
 "Where the button need to be added in single page .. before / after / replace"
 msgstr ""
 
-#: includes/woocommerce-settings.php:103 includes/woocommerce-settings.php:104
+#: includes/woocommerce-settings.php:140 includes/woocommerce-settings.php:141
 msgid "Simple Buy Button Title"
 msgstr ""
 
-#: includes/woocommerce-settings.php:107
-msgid "Buy Now"
+#: includes/woocommerce-settings.php:148
+msgid "Reset Cart before Buy Now"
+msgstr ""
+
+#: includes/woocommerce-settings.php:154
+msgid "Remove Quantity input"
 msgstr ""
 
 #. Name of the plugin
-msgid "Woocommerce Simple Buy Now"
+msgid "WooCommerce Simple Buy Now"
 msgstr ""
 
 #. Description of the plugin
@@ -80,9 +119,9 @@ msgstr ""
 
 #. URI of the plugin
 #. Author URI of the plugin
-msgid "https://twitter.com/NDoubleHWP"
+msgid "http://ndoublehwp.com/"
 msgstr ""
 
 #. Author of the plugin
-msgid "ndoublehwp"
+msgid "N'DoubleH"
 msgstr ""
