@@ -1,4 +1,7 @@
 == Changelog ==
+= 1.0.6 - 2018-09-10 =
+* Fix - Variable product when selected.
+* Add - Add the loading icon when clicked.
 
 = 1.0.5 - 2018-07-28 =
 * Feature - Add redirect setttings (use pop-up or redirect to the checkout page).
