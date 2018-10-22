@@ -177,9 +177,7 @@ class WooCommerce_Simple_Buy_Now {
 	 * @return array integrations
 	 */
 	public function settings_page( $integrations ) {
-		foreach ( glob( WOO_SIMPLE_BUY_PLUGIN_PATH . '/includes/woocommerce-settings.php*' ) as $file ) {
-			$integrations[] = require_once( $file );
-		}
+		$integrations[] = require WOO_SIMPLE_BUY_PLUGIN_PATH . '/includes/woocommerce-settings.php';
 
 		return $integrations;
 	}
@@ -221,17 +219,13 @@ class WooCommerce_Simple_Buy_Now {
 	 * @return array
 	 */
 	public function body_class( $classes ) {
-		$button_position = get_option( 'woocommerce_simple_buy_single_product_position' );
-
 		if ( is_product() ) {
-			$classes[] = 'woocommerce-simple-buy-now';
-
-			if ( $this->is_replace_button() ) {
-				$classes[] = 'woocommerce-simple-buy-now--remove_add_to_cart_btn';
-			}
+			$button_position = get_option( 'woocommerce_simple_buy_single_product_position' );
+			$classes[]       = 'woocommerce-simple-buy-now';
+			$classes[]       = 'woocommerce-simple-buy-now--button-' . esc_attr( $button_position ) . '-cart';
 
 			if ( $this->is_remove_quantity() ) {
-				$classes[] = 'woocommerce-simple-buy-now--remove_quantity_input';
+				$classes[] = 'woocommerce-simple-buy-now--remove-quantity';
 			}
 		}
 
@@ -374,9 +368,9 @@ class WooCommerce_Simple_Buy_Now {
 		global $product;
 
 		?>
-        <button <?php echo isset( $args['type'] ) ? 'type="' . esc_attr( $args['type'] ) . '"' : ''; ?> value="<?php echo esc_attr( $product->get_id() ); ?>" class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $args['class'] ) ) ); ?>" <?php echo isset( $args['attributes'] ) ? $args['attributes'] : ''; // WPCS: xss ok. ?>>
+		<button <?php echo isset( $args['type'] ) ? 'type="' . esc_attr( $args['type'] ) . '"' : ''; ?> value="<?php echo esc_attr( $product->get_id() ); ?>" class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $args['class'] ) ) ); ?>" <?php echo isset( $args['attributes'] ) ? $args['attributes'] : ''; // WPCS: xss ok. ?>>
 			<?php echo isset( $args['title'] ) ? esc_html( $args['title'] ) : ''; ?>
-        </button>
+		</button>
 		<?php
 	}
 
@@ -388,27 +382,27 @@ class WooCommerce_Simple_Buy_Now {
 			return;
 		}
 		?>
-        <div class="wsb-modal">
-            <div class="wsb-modal-overlay wsb-modal-toggle"></div>
-            <div class="wsb-modal-wrapper wsb-modal-transition">
+		<div class="wsb-modal">
+			<div class="wsb-modal-overlay wsb-modal-toggle"></div>
+			<div class="wsb-modal-wrapper wsb-modal-transition">
 
 				<?php do_action( 'wsb_modal_header_content' ); ?>
 
-                <div class="wsb-modal-header">
-                    <button class="wsb-modal-close wsb-modal-toggle">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="wsb-modal-body">
+				<div class="wsb-modal-header">
+					<button class="wsb-modal-close wsb-modal-toggle">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="wsb-modal-body">
 					<?php do_action( 'wsb_before_modal_body_content' ); ?>
 
-                    <div class="wsb-modal-content"></div>
+					<div class="wsb-modal-content"></div>
 
 					<?php do_action( 'wsb_after_modal_body_content' ); ?>
 
-                </div>
-            </div>
-        </div>
+				</div>
+			</div>
+		</div>
 		<?php
 	}
 
