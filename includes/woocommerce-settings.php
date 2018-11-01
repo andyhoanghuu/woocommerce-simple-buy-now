@@ -36,7 +36,7 @@ class WooCommerce_Simple_Buy_Settings_Buy_Now_Settings extends WC_Settings_Page 
 	public function get_sections() {
 		$sections = [
 			''          => esc_html__( 'General', 'woocommerce-simple-buy-now' ),
-			'customize' => esc_html__( 'Customize', 'woocommerce-simple-buy-now' ),
+			// 'customize' => esc_html__( 'Customize', 'woocommerce-simple-buy-now' ),
 		];
 
 		return apply_filters( 'woocommerce_get_sections_' . $this->id, $sections );
@@ -49,9 +49,12 @@ class WooCommerce_Simple_Buy_Settings_Buy_Now_Settings extends WC_Settings_Page 
 	 */
 	public function get_positions() {
 		return apply_filters( 'woocommerce_simple_buy_get_postitions', [
-			'before'  => esc_html__( 'Before Add To Cart Button', 'woocommerce-simple-buy-now' ),
-			'after'   => esc_html__( 'After Add To Cart Button', 'woocommerce-simple-buy-now' ),
-			'replace' => esc_html__( 'Replace Add To Cart Button', 'woocommerce-simple-buy-now' ),
+			'before'          => esc_html__( 'Before Add To Cart Button', 'woocommerce-simple-buy-now' ),
+			'after'           => esc_html__( 'After Add To Cart Button', 'woocommerce-simple-buy-now' ),
+			'replace'         => esc_html__( 'Replace Add To Cart Button', 'woocommerce-simple-buy-now' ),
+			'before_quantity' => esc_html__( 'Before Quantity Input', 'woocommerce-simple-buy-now' ),
+			'after_quantity'  => esc_html__( 'After Quantity Input', 'woocommerce-simple-buy-now' ),
+			'shortcode'       => esc_html__( 'Use a Shortcode (for developer)', 'woocommerce-simple-buy-now' ),
 		] );
 	}
 
@@ -85,11 +88,11 @@ class WooCommerce_Simple_Buy_Settings_Buy_Now_Settings extends WC_Settings_Page 
 	 * @return array
 	 */
 	public function get_settings( $current_section = '' ) {
-		if ( 'customize' === $current_section ) {
-			$settings = $this->get_customize();
-		} else {
+		// if ( 'customize' === $current_section ) {
+		// 	$settings = $this->get_customize();
+		// } else {
 			$settings = $this->get_general();
-		}
+		// }
 
 		return apply_filters( 'woocommerce_get_settings_' . $this->id, $settings, $current_section );
 	}

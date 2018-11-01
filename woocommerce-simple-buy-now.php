@@ -159,11 +159,18 @@ class WooCommerce_Simple_Buy_Now {
 
 			if ( $this->is_before_button() ) {
 				add_action( 'woocommerce_before_add_to_cart_button', [ $this, 'add_simple_buy_button' ] );
-			} else {
-				add_action( 'woocommerce_after_add_to_cart_button', [ $this, 'add_simple_buy_button' ] );
+			} elseif ( $this->is_after_button() ) {
+				add_action( 'woocommerce_after_add_to_cart_button', [ $this, 'add_simple_buy_button' ], 5 );
+			} elseif ( $this->is_before_quantity_input() ) {
+				add_action( 'woocommerce_before_add_to_cart_quantity', [ $this, 'add_simple_buy_button' ] );
+			} elseif ( $this->is_after_quantity_input() ) {
+				add_action( 'woocommerce_after_add_to_cart_quantity', [ $this, 'add_simple_buy_button' ], 5 );
+			} elseif ( $this->is_replace_button() ) {
+				add_action( 'woocommerce_after_add_to_cart_button', [ $this, 'add_simple_buy_button' ], 5 );
 			}
 
 			add_action( 'wsb_before_add_to_cart', [ $this, 'reset_cart' ], 10 );
+			add_shortcode( 'woocommerce_simple_buy_now_button', [ $this, 'add_shortcode_button' ] );
 		}
 
 		add_filter( 'woocommerce_get_settings_pages', [ $this, 'settings_page' ] );
@@ -323,6 +330,33 @@ class WooCommerce_Simple_Buy_Now {
 	 */
 	public function is_replace_button() {
 		return ( 'replace' === $this->get_position() );
+	}
+
+	/**
+	 * If button position is before `quantity` input.
+	 *
+	 * @return boolean
+	 */
+	public function is_before_quantity_input() {
+		return ( 'before_quantity' === $this->get_position() );
+	}
+
+	/**
+	 * If button position is after `quantity` input.
+	 *
+	 * @return boolean
+	 */
+	public function is_after_quantity_input() {
+		return ( 'after_quantity' === $this->get_position() );
+	}
+
+	/**
+	 * If button position is after `quantity` input.
+	 *
+	 * @return boolean
+	 */
+	public function is_shortcode() {
+		return ( 'shortcode' === $this->get_position() );
 	}
 
 	/**
@@ -495,5 +529,16 @@ class WooCommerce_Simple_Buy_Now {
 			// Remove all products in cart.
 			WC()->cart->empty_cart();
 		}
+	}
+
+	/**
+	 * Register shortcode button
+	 *
+	 * @param array atts Attributes.
+	 */
+	public function add_shortcode_button( $atts ) {
+		ob_start();
+		$this->add_simple_buy_button();
+		return ob_get_clean();
 	}
 }

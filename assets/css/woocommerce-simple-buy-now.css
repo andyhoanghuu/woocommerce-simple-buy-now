@@ -147,6 +147,16 @@
 	position: relative;
 }
 
+.woocommerce-simple-buy-now--button-before_quantity-cart .wsb-button {
+	float: left;
+	margin-right: 10px;
+}
+
+.woocommerce-simple-buy-now--button-before-cart .wsb-button {
+	float: left;
+	margin-right: 10px;
+}
+
 .wsb-button.wsb-loading {
 	cursor: not-allowed;
 }
