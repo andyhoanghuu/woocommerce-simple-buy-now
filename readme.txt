@@ -3,7 +3,7 @@ Contributors: ndoublehwp
 Tags: woocommerce, woocommerce addon, woocommerce simple buy now, woo simple buy now, woocommerce checkout in product page
 Requires at least: 4.6
 Tested up to: 4.9.8
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,10 @@ The manual installation method involves downloading my plugin and uploading it t
 5. Order detail page after checkout.
 
 == Changelog ==
+
+= 1.0.7 - 2018-11-02 =
+* Add - Add button positions.
+* Add - Support a shortcode for developer.
 
 = 1.0.6 - 2018-09-10 =
 * Fix - Variable product when selected.

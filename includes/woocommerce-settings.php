@@ -35,7 +35,7 @@ class WooCommerce_Simple_Buy_Settings_Buy_Now_Settings extends WC_Settings_Page 
 	 */
 	public function get_sections() {
 		$sections = [
-			''          => esc_html__( 'General', 'woocommerce-simple-buy-now' ),
+			'' => esc_html__( 'General', 'woocommerce-simple-buy-now' ),
 			// 'customize' => esc_html__( 'Customize', 'woocommerce-simple-buy-now' ),
 		];
 
@@ -91,7 +91,8 @@ class WooCommerce_Simple_Buy_Settings_Buy_Now_Settings extends WC_Settings_Page 
 		// if ( 'customize' === $current_section ) {
 		// 	$settings = $this->get_customize();
 		// } else {
-			$settings = $this->get_general();
+		$settings = $this->get_general();
+
 		// }
 
 		return apply_filters( 'woocommerce_get_settings_' . $this->id, $settings, $current_section );

@@ -7,7 +7,7 @@
  * Author URI:      http://ndoublehwp.com/
  * Text Domain:     woocommerce-simple-buy-now
  * Domain Path:     /languages
- * Version:         1.0.6
+ * Version:         1.0.7
  *
  * @package         Woocommerce_Simple_Buy_Now
  */
@@ -374,19 +374,7 @@ class WooCommerce_Simple_Buy_Now {
 	 * Add popup to cart form in single product page.
 	 */
 	public function add_simple_buy_button() {
-		global $product;
-
-		$btn_class = apply_filters( 'wsb_single_product_button_classes', [
-			'wsb-button',
-			'js-wsb-add-to-cart',
-		] );
-
-		$args = apply_filters( 'wsb_buy_now_button_args', [
-			'type'       => 'submit',
-			'class'      => $btn_class,
-			'title'      => esc_html( $this->get_button_title() ),
-			'attributes' => '',
-		], $this->get_redirect(), $this->get_position() );
+		$args = $this->get_button_default_args();
 
 		$this->button_template( $args );
 	}
@@ -534,11 +522,34 @@ class WooCommerce_Simple_Buy_Now {
 	/**
 	 * Register shortcode button
 	 *
-	 * @param array atts Attributes.
+	 * @param array $atts Attributes.
 	 */
 	public function add_shortcode_button( $atts ) {
+		$atts = shortcode_atts( $this->get_button_default_args(), $atts, 'woocommerce_simple_buy_now_button' );
+
 		ob_start();
-		$this->add_simple_buy_button();
+
+		$this->button_template( $atts );
+
 		return ob_get_clean();
+	}
+
+	/**
+	 * Gets button default args
+	 *
+	 * @return array
+	 */
+	public function get_button_default_args() {
+		$btn_class = apply_filters( 'wsb_single_product_button_classes', [
+			'wsb-button',
+			'js-wsb-add-to-cart',
+		] );
+
+		return apply_filters( 'wsb_buy_now_button_args', [
+			'type'       => 'submit',
+			'class'      => $btn_class,
+			'title'      => esc_html( $this->get_button_title() ),
+			'attributes' => '',
+		], $this->get_redirect(), $this->get_position() );
 	}
 }
