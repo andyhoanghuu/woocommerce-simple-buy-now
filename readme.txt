@@ -25,6 +25,25 @@ New*: You can select to Redirect to checkout page from v1.0.5
 * Contact me and hire me [Website](http://ndoublehwp.com/)
 * I would be happy if you leave a review :) [Review](https://wordpress.org/support/plugin/woo-simple-buy-now/reviews/)
 
+= Settings =
+Go to `Dashboard > WooCommerce > Settings > WC Simple Buy Now` tab
+General:
+
+* Enable Simple Buy Now: Activate Buy Now feature
+* Redirect: Use a *Pop-up* or *Redirect to the checkout page (skip the cart page)*
+* Simple Buy Now Button Position: Set a position for Buy Now button
+* Simple Buy Button Title: the title default is *Buy Now*
+* Reset Cart before Buy Now: Apcept reset cart before Buy Now
+* Remove Quantity input: Hide quantity input by CSS code
+
+= Shortcode for developer =
+`[woocommerce_simple_buy_now_button]`
+Arguments:
+*title*
+*class*
+If you are a developer, you can use this shortcode at `content-single-product` template or its child. It should be written on the inside of the form cart.
+For example, `<?php do_shortcode( '[woocommerce_simple_buy_now_button title="Buy Now" class="wsb-button"]' ); ?>`
+
 == Installation ==
 
 = Minimum Requirements =

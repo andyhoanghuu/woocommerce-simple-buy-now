@@ -62,7 +62,7 @@ if ( defined( 'WOO_SIMPLE_BUY_VERSION' ) ) {
 	return;
 }
 
-define( 'WOO_SIMPLE_BUY_VERSION', '1.0.6' );
+define( 'WOO_SIMPLE_BUY_VERSION', '1.0.7' );
 define( 'WOO_SIMPLE_BUY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WOO_SIMPLE_BUY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 /**
