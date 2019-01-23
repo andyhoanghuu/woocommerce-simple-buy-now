@@ -2,15 +2,17 @@ jQuery(document).ready(function($) {
   $('.js-wsb-add-to-cart').on('click', function(e) {
     e.preventDefault();
     var $el = $(this);
-    var product_id = $el.val(),
-        variation_id = $('input[name="variation_id"]').val(),
-        quantity = $('input[name="quantity"]').val(),
-        data = 'action=wsb_add_to_cart_ajax&product_id=' + product_id + '&quantity=' + quantity;
 
-    if (variation_id != '') {
-      data = 'action=wsb_add_to_cart_ajax&product_id=' + product_id + '&variation_id=' + variation_id + '&quantity=' +
-          quantity;
-    }
+    var data = $('form.cart').serializeArray().reduce(function(obj, item) {
+    	obj[item.name] = item.value;
+    	return obj;
+	}, {});
+
+	if (typeof data['add-to-cart'] == "undefined") {
+		data['add-to-cart'] = $el.val();
+	}
+
+	data['action'] = 'wsb_add_to_cart_ajax';
 
     $.ajax({
       url: woocommerce_simple_buy_now.ajax_url,
@@ -42,6 +44,8 @@ jQuery(document).ready(function($) {
         } else {
           // Re-call checkout js.
           woocommerce_checkout_js();
+          country_select();
+          address_i18n();
 
           $(document.body).trigger('wsb_checkout_template_added');
           $('.wsb-modal').addClass('is-visible');
@@ -617,7 +621,7 @@ jQuery(document).ready(function($) {
 
     var wc_checkout_coupons = {
       init: function() {
-        $(document.body).on('click', 'a.showcoupon', this.show_coupon_form);
+        // $(document.body).on('click', 'a.showcoupon', this.show_coupon_form);
         $(document.body).on('click', '.woocommerce-remove-coupon', this.remove_coupon);
         $('form.checkout_coupon').hide().submit(this.submit);
       },
@@ -741,5 +745,283 @@ jQuery(document).ready(function($) {
     wc_checkout_coupons.init();
     wc_checkout_login_form.init();
     wc_terms_toggle.init();
+  }
+
+  function country_select() {
+	  // wc_country_select_params is required to continue, ensure the object exists
+	  if ( typeof wc_country_select_params === 'undefined' ) {
+		  return false;
+	  }
+
+	  function getEnhancedSelectFormatString() {
+		  return {
+			  'language': {
+				  errorLoading: function() {
+					  // Workaround for https://github.com/select2/select2/issues/4355 instead of i18n_ajax_error.
+					  return wc_country_select_params.i18n_searching;
+				  },
+				  inputTooLong: function( args ) {
+					  var overChars = args.input.length - args.maximum;
+
+					  if ( 1 === overChars ) {
+						  return wc_country_select_params.i18n_input_too_long_1;
+					  }
+
+					  return wc_country_select_params.i18n_input_too_long_n.replace( '%qty%', overChars );
+				  },
+				  inputTooShort: function( args ) {
+					  var remainingChars = args.minimum - args.input.length;
+
+					  if ( 1 === remainingChars ) {
+						  return wc_country_select_params.i18n_input_too_short_1;
+					  }
+
+					  return wc_country_select_params.i18n_input_too_short_n.replace( '%qty%', remainingChars );
+				  },
+				  loadingMore: function() {
+					  return wc_country_select_params.i18n_load_more;
+				  },
+				  maximumSelected: function( args ) {
+					  if ( args.maximum === 1 ) {
+						  return wc_country_select_params.i18n_selection_too_long_1;
+					  }
+
+					  return wc_country_select_params.i18n_selection_too_long_n.replace( '%qty%', args.maximum );
+				  },
+				  noResults: function() {
+					  return wc_country_select_params.i18n_no_matches;
+				  },
+				  searching: function() {
+					  return wc_country_select_params.i18n_searching;
+				  }
+			  }
+		  };
+	  }
+
+	  // Select2 Enhancement if it exists
+	  if ( $().selectWoo ) {
+		  var wc_country_select_select2 = function() {
+			  $( 'select.country_select:visible, select.state_select:visible' ).each( function() {
+				  var select2_args = $.extend({
+					  placeholderOption: 'first',
+					  width: '100%'
+				  }, getEnhancedSelectFormatString() );
+
+				  $( this ).selectWoo( select2_args );
+				  // Maintain focus after select https://github.com/select2/select2/issues/4384
+				  $( this ).on( 'select2:select', function() {
+					  $( this ).focus();
+				  } );
+			  });
+		  };
+
+		  wc_country_select_select2();
+
+		  $( document.body ).bind( 'country_to_state_changed', function() {
+			  wc_country_select_select2();
+		  });
+	  }
+
+	  /* State/Country select boxes */
+	  var states_json = wc_country_select_params.countries.replace( /&quot;/g, '"' ),
+		  states = $.parseJSON( states_json );
+
+	  $( document.body ).on( 'change', 'select.country_to_state, input.country_to_state', function() {
+		  // Grab wrapping element to target only stateboxes in same 'group'
+		  var $wrapper    = $( this ).closest('.woocommerce-billing-fields, .woocommerce-shipping-fields, .woocommerce-shipping-calculator');
+
+		  if ( ! $wrapper.length ) {
+			  $wrapper = $( this ).closest('.form-row').parent();
+		  }
+
+		  var country     = $( this ).val(),
+			  $statebox   = $wrapper.find( '#billing_state, #shipping_state, #calc_shipping_state' ),
+			  $parent     = $statebox.closest( 'p.form-row' ),
+			  input_name  = $statebox.attr( 'name' ),
+			  input_id    = $statebox.attr( 'id' ),
+			  value       = $statebox.val(),
+			  placeholder = $statebox.attr( 'placeholder' ) || $statebox.attr( 'data-placeholder' ) || '';
+
+		  if ( states[ country ] ) {
+			  if ( $.isEmptyObject( states[ country ] ) ) {
+
+				  $statebox.closest( 'p.form-row' ).hide().find( '.select2-container' ).remove();
+				  $statebox.replaceWith( '<input type="hidden" class="hidden" name="' + input_name + '" id="' + input_id + '" value="" placeholder="' + placeholder + '" />' );
+
+				  $( document.body ).trigger( 'country_to_state_changed', [ country, $wrapper ] );
+
+			  } else {
+
+				  var options = '',
+					  state = states[ country ];
+
+				  for( var index in state ) {
+					  if ( state.hasOwnProperty( index ) ) {
+						  options = options + '<option value="' + index + '">' + state[ index ] + '</option>';
+					  }
+				  }
+
+				  $statebox.closest( 'p.form-row' ).show();
+
+				  if ( $statebox.is( 'input' ) ) {
+					  // Change for select
+					  $statebox.replaceWith( '<select name="' + input_name + '" id="' + input_id + '" class="state_select" data-placeholder="' + placeholder + '"></select>' );
+					  $statebox = $wrapper.find( '#billing_state, #shipping_state, #calc_shipping_state' );
+				  }
+
+				  $statebox.html( '<option value="">' + wc_country_select_params.i18n_select_state_text + '</option>' + options );
+				  $statebox.val( value ).change();
+
+				  $( document.body ).trigger( 'country_to_state_changed', [country, $wrapper ] );
+
+			  }
+		  } else {
+			  if ( $statebox.is( 'select' ) ) {
+
+				  $parent.show().find( '.select2-container' ).remove();
+				  $statebox.replaceWith( '<input type="text" class="input-text" name="' + input_name + '" id="' + input_id + '" placeholder="' + placeholder + '" />' );
+
+				  $( document.body ).trigger( 'country_to_state_changed', [country, $wrapper ] );
+
+			  } else if ( $statebox.is( 'input[type="hidden"]' ) ) {
+
+				  $parent.show().find( '.select2-container' ).remove();
+				  $statebox.replaceWith( '<input type="text" class="input-text" name="' + input_name + '" id="' + input_id + '" placeholder="' + placeholder + '" />' );
+
+				  $( document.body ).trigger( 'country_to_state_changed', [country, $wrapper ] );
+
+			  }
+		  }
+
+		  $( document.body ).trigger( 'country_to_state_changing', [country, $wrapper ] );
+
+	  });
+  }
+
+  function address_i18n() {
+	  // wc_address_i18n_params is required to continue, ensure the object exists
+	  if ( typeof wc_address_i18n_params === 'undefined' ) {
+		  return false;
+	  }
+
+	  var locale_json = wc_address_i18n_params.locale.replace( /&quot;/g, '"' ), locale = $.parseJSON( locale_json );
+
+	  function field_is_required( field, is_required ) {
+		  if ( is_required ) {
+			  field.find( 'label .optional' ).remove();
+			  field.addClass( 'validate-required' );
+
+			  if ( field.find( 'label .required' ).length === 0 ) {
+				  field.find( 'label' ).append( '&nbsp;<abbr class="required" title="' + wc_address_i18n_params.i18n_required_text + '">*</abbr>' );
+			  }
+		  } else {
+			  field.find( 'label .required' ).remove();
+			  field.removeClass( 'validate-required' );
+
+			  if ( field.find( 'label .optional' ).length === 0 ) {
+				  field.find( 'label' ).append( '&nbsp;<span class="optional">(' + wc_address_i18n_params.i18n_optional_text + ')</span>' );
+			  }
+		  }
+	  }
+
+	  // Handle locale
+	  $( document.body ).bind( 'country_to_state_changing', function( event, country, wrapper ) {
+		  var thisform = wrapper, thislocale;
+
+		  if ( typeof locale[ country ] !== 'undefined' ) {
+			  thislocale = locale[ country ];
+		  } else {
+			  thislocale = locale['default'];
+		  }
+
+		  var $postcodefield = thisform.find( '#billing_postcode_field, #shipping_postcode_field' ),
+			  $cityfield     = thisform.find( '#billing_city_field, #shipping_city_field' ),
+			  $statefield    = thisform.find( '#billing_state_field, #shipping_state_field' );
+
+		  if ( ! $postcodefield.attr( 'data-o_class' ) ) {
+			  $postcodefield.attr( 'data-o_class', $postcodefield.attr( 'class' ) );
+			  $cityfield.attr( 'data-o_class', $cityfield.attr( 'class' ) );
+			  $statefield.attr( 'data-o_class', $statefield.attr( 'class' ) );
+		  }
+
+		  var locale_fields = $.parseJSON( wc_address_i18n_params.locale_fields );
+
+		  $.each( locale_fields, function( key, value ) {
+
+			  var field       = thisform.find( value ),
+				  fieldLocale = $.extend( true, {}, locale['default'][ key ], thislocale[ key ] );
+
+			  // Labels.
+			  if ( typeof fieldLocale.label !== 'undefined' ) {
+				  field.find( 'label' ).html( fieldLocale.label );
+			  }
+
+			  // Placeholders.
+			  if ( typeof fieldLocale.placeholder !== 'undefined' ) {
+				  field.find( 'input' ).attr( 'placeholder', fieldLocale.placeholder );
+				  field.find( '.select2-selection__placeholder' ).text( fieldLocale.placeholder );
+			  }
+
+			  // Use the i18n label as a placeholder if there is no label element and no i18n placeholder.
+			  if ( typeof fieldLocale.placeholder === 'undefined' && typeof fieldLocale.label !== 'undefined' && ! field.find( 'label' ).length ) {
+				  field.find( 'input' ).attr( 'placeholder', fieldLocale.label );
+				  field.find( '.select2-selection__placeholder' ).text( fieldLocale.label );
+			  }
+
+			  // Required.
+			  if ( typeof fieldLocale.required !== 'undefined' ) {
+				  field_is_required( field, fieldLocale.required );
+			  } else {
+				  field_is_required( field, false );
+			  }
+
+			  // Priority.
+			  if ( typeof fieldLocale.priority !== 'undefined' ) {
+				  field.data( 'priority', fieldLocale.priority );
+			  }
+
+			  // Hidden fields.
+			  if ( 'state' !== key ) {
+				  if ( typeof fieldLocale.hidden !== 'undefined' && true === fieldLocale.hidden ) {
+					  field.hide().find( 'input' ).val( '' );
+				  } else {
+					  field.show();
+				  }
+			  }
+		  });
+
+		  var fieldsets = $('.woocommerce-billing-fields__field-wrapper, .woocommerce-shipping-fields__field-wrapper, .woocommerce-address-fields__field-wrapper, .woocommerce-additional-fields__field-wrapper .woocommerce-account-fields');
+
+		  fieldsets.each( function( index, fieldset ) {
+			  var rows    = $( fieldset ).find( '.form-row' );
+			  var wrapper = rows.first().parent();
+
+			  // Before sorting, ensure all fields have a priority for bW compatibility.
+			  var last_priority = 0;
+
+			  rows.each( function() {
+				  if ( ! $( this ).data( 'priority' ) ) {
+					  $( this ).data( 'priority', last_priority + 1 );
+				  }
+				  last_priority = $( this ).data( 'priority' );
+			  } );
+
+			  // Sort the fields.
+			  rows.sort( function( a, b ) {
+				  var asort = $( a ).data( 'priority' ),
+					  bsort = $( b ).data( 'priority' );
+
+				  if ( asort > bsort ) {
+					  return 1;
+				  }
+				  if ( asort < bsort ) {
+					  return -1;
+				  }
+				  return 0;
+			  });
+
+			  rows.detach().appendTo( wrapper );
+		  } );
+	  });
   }
 });

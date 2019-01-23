@@ -18,8 +18,6 @@
 /**
  * Modals ($wsb-modals)
  */
-
-/* 1. Ensure this sits above everything when visible */
 .wsb-modal {
 	position: absolute;
 	z-index: 999999;
@@ -163,6 +161,7 @@
 
 .wsb-button.disabled {
 	cursor: not-allowed;
+	opacity: .2;
 }
 
 .wsb-button.wsb-loading:before {
@@ -211,4 +210,9 @@
 	100% {
 		transform: translate(-50%, -50%) rotate(360deg);
 	}
+}
+
+/* WooCommerce */
+.woocommerce-simple-buy-now > .select2-container--open .select2-dropdown {
+	z-index: 999999 !important;
 }

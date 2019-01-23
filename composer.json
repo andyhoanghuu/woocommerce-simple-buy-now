@@ -1,0 +1,24 @@
+{
+    "name": "ndoublehwp/woocommerce-simple-buy-now",
+    "description": "WooCommerce Simple Buy Now",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "ndoublehwp",
+            "email": "ndoubleh.wp@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "WooCommerce_Simple_Buy_Now\\": "includes/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist"
+    }
+}
