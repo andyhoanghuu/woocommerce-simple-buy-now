@@ -110,11 +110,8 @@ class Plugin {
 	 * Enqueue scripts.
 	 */
 	public function enqueue_scripts() {
-		wp_register_style( 'woocommerce-simple-buy-now',
-			WOO_SIMPLE_BUY_PLUGIN_URL . 'assets/css/woocommerce-simple-buy-now.css', [], WOO_SIMPLE_BUY_VERSION );
-		wp_register_script( 'woocommerce-simple-buy-now',
-			WOO_SIMPLE_BUY_PLUGIN_URL . 'assets/js/woocommerce-simple-buy-now.js', [ 'jquery' ], WOO_SIMPLE_BUY_VERSION,
-			true );
+		wp_register_style( 'woocommerce-simple-buy-now', WOO_SIMPLE_BUY_PLUGIN_URL . 'assets/css/woocommerce-simple-buy-now.css', [], WOO_SIMPLE_BUY_VERSION );
+		wp_register_script( 'woocommerce-simple-buy-now', WOO_SIMPLE_BUY_PLUGIN_URL . 'assets/js/woocommerce-simple-buy-now.js', [ 'jquery' ], WOO_SIMPLE_BUY_VERSION, true );
 
 		if ( is_product() ) {
 			wp_enqueue_style( 'woocommerce-simple-buy-now' );
@@ -323,13 +320,11 @@ class Plugin {
 	public function button_template( $args ) {
 		global $product;
 
+		$type    = isset( $args['type'] ) ? 'type="' . esc_attr( $args['type'] ) . '"' : '';
+		$classes = implode( ' ', array_map( 'sanitize_html_class', $args['class'] ) );
+		$atts    = isset( $args['attributes'] ) ? $args['attributes'] : '';
 		?>
-		<button <?php echo isset( $args['type'] ) ? 'type="' . esc_attr( $args['type'] ) . '"' : ''; ?>
-			value="<?php echo esc_attr( $product->get_id() ); ?>" class="<?php echo esc_attr( implode( ' ',
-			array_map( 'sanitize_html_class',
-				$args['class'] ) ) ); ?>" <?php echo isset( $args['attributes'] ) ? $args['attributes'] : ''; // WPCS: xss ok. ?>>
-			<?php echo isset( $args['title'] ) ? esc_html( $args['title'] ) : ''; ?>
-		</button>
+		<button <?php print $type; ?> name="wsb-buy-now" value="<?php echo esc_attr( $product->get_id() ); ?>" class="<?php echo esc_attr( $classes ); ?>" <?php print $atts; // WPCS: xss ok. ?>><?php echo isset( $args['title'] ) ? esc_html( $args['title'] ) : ''; ?></button>
 		<?php
 	}
 
@@ -358,7 +353,6 @@ class Plugin {
 					<div class="wsb-modal-content"></div>
 
 					<?php do_action( 'wsb_after_modal_body_content' ); ?>
-
 				</div>
 			</div>
 		</div>
@@ -369,11 +363,7 @@ class Plugin {
 	 * Add product to cart via ajax function.
 	 */
 	public function add_to_cart_ajax() {
-		$product_id        = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_REQUEST['add-to-cart'] ) );
-		$was_added_to_cart = false;
-		$product           = wc_get_product( $product_id );
-
-		$product_type = $product->get_type();
+		$product_id = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_REQUEST['wsb-buy-now'] ) );
 
 		/**
 		 * Fires before add to cart via ajax.
@@ -382,25 +372,14 @@ class Plugin {
 		 */
 		do_action( 'wsb_before_add_to_cart', $product_id );
 
-		if ( 'variable' === $product_type || 'variation' === $product_type ) {
-			$was_added_to_cart = $this->add_to_cart_handler_variable( $product_id );
-		} else {
-			$was_added_to_cart = $this->add_to_cart_handler_simple( $product_id );
-		}
-
 		try {
-			if ( $was_added_to_cart ) {
+			$_REQUEST['add-to-cart'] = $product_id;
 
-				do_action( 'woocommerce_ajax_added_to_cart', $product_id );
+			add_filter( 'pre_option_woocommerce_cart_redirect_after_add', function ( $option ) {
+				return 'no';
+			} );
 
-				$items = WC()->cart->get_cart();
-
-				wc_setcookie( 'woocommerce_items_in_cart', count( $items ) );
-				wc_setcookie( 'woocommerce_cart_hash', md5( json_encode( $items ) ) );
-
-				do_action( 'woocommerce_set_cart_cookies', true );
-				define( 'WOOCOMMERCE_CHECKOUT', true );
-			}
+			\WC_Form_Handler::add_to_cart_action();
 
 			/**
 			 * Filters the template of checkout form after add to cart.
@@ -420,121 +399,6 @@ class Plugin {
 		} catch ( \Exception $e ) {
 			return wp_send_json_error( [ 'message' => $e->getMessage() ], 400 );
 		}
-	}
-
-	/**
-	 * Handle adding variable products to the cart.
-	 *
-	 * @param int $product_id Product ID to add to the cart.
-	 *
-	 * @return bool success or not
-	 */
-	public function add_to_cart_handler_variable( $product_id ) {
-		try {
-			$variation_id       = empty( $_REQUEST['variation_id'] ) ? '' : absint( wp_unslash( $_REQUEST['variation_id'] ) );
-			$quantity           = empty( $_REQUEST['quantity'] ) ? 1 : wc_stock_amount( wp_unslash( $_REQUEST['quantity'] ) ); // WPCS: sanitization ok.
-			$missing_attributes = [];
-			$variations         = [];
-			$adding_to_cart     = wc_get_product( $product_id );
-
-			// If the $product_id was in fact a variation ID, update the variables.
-			if ( $adding_to_cart->is_type( 'variation' ) ) {
-				$variation_id   = $product_id;
-				$product_id     = $adding_to_cart->get_parent_id();
-				$adding_to_cart = wc_get_product( $product_id );
-
-				if ( ! $adding_to_cart ) {
-					return false;
-				}
-			}
-
-			// Gather posted attributes.
-			$posted_attributes = [];
-
-			foreach ( $adding_to_cart->get_attributes() as $attribute ) {
-				if ( ! $attribute['is_variation'] ) {
-					continue;
-				}
-				$attribute_key = 'attribute_' . sanitize_title( $attribute['name'] );
-
-				if ( isset( $_REQUEST[ $attribute_key ] ) ) {
-					if ( $attribute['is_taxonomy'] ) {
-						// Don't use wc_clean as it destroys sanitized characters.
-						$value = sanitize_title( wp_unslash( $_REQUEST[ $attribute_key ] ) );
-					} else {
-						$value = html_entity_decode( wc_clean( wp_unslash( $_REQUEST[ $attribute_key ] ) ), ENT_QUOTES, get_bloginfo( 'charset' ) ); // WPCS: sanitization ok.
-					}
-
-					$posted_attributes[ $attribute_key ] = $value;
-				}
-			}
-
-			// If no variation ID is set, attempt to get a variation ID from posted attributes.
-			if ( empty( $variation_id ) ) {
-				$data_store   = \WC_Data_Store::load( 'product' );
-				$variation_id = $data_store->find_matching_product_variation( $adding_to_cart, $posted_attributes );
-			}
-
-			// Check the data we have is valid.
-			$variation_data = wc_get_product_variation_attributes( $variation_id );
-
-			foreach ( $adding_to_cart->get_attributes() as $attribute ) {
-				if ( ! $attribute['is_variation'] ) {
-					continue;
-				}
-
-				// Get valid value from variation data.
-				$attribute_key = 'attribute_' . sanitize_title( $attribute['name'] );
-				$valid_value   = isset( $variation_data[ $attribute_key ] ) ? $variation_data[ $attribute_key ] : '';
-
-				/**
-				 * If the attribute value was posted, check if it's valid.
-				 *
-				 * If no attribute was posted, only error if the variation has an 'any' attribute which requires a value.
-				 */
-				if ( isset( $posted_attributes[ $attribute_key ] ) ) {
-					$value = $posted_attributes[ $attribute_key ];
-
-					// Allow if valid or show error.
-					if ( $valid_value === $value ) {
-						$variations[ $attribute_key ] = $value;
-					} elseif ( '' === $valid_value && in_array( $value, $attribute->get_slugs() ) ) {
-						// If valid values are empty, this is an 'any' variation so get all possible values.
-						$variations[ $attribute_key ] = $value;
-					}
-				} elseif ( '' === $valid_value ) {
-					$missing_attributes[] = wc_attribute_label( $attribute['name'] );
-				}
-			}
-		} catch ( \Exception $e ) {
-			return false;
-		}
-
-		$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity, $variation_id, $variations );
-
-		if ( $passed_validation && false !== WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variations ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Handle adding simple products to the cart.
-	 *
-	 * @param int $product_id Product ID to add to the cart.
-	 *
-	 * @return bool success or not
-	 */
-	public function add_to_cart_handler_simple( $product_id ) {
-		$quantity          = empty( $_REQUEST['quantity'] ) ? 1 : wc_stock_amount( $_REQUEST['quantity'] );
-		$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity );
-
-		if ( $passed_validation && false !== WC()->cart->add_to_cart( $product_id, $quantity ) ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**

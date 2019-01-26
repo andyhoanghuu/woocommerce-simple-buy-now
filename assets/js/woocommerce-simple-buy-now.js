@@ -8,10 +8,11 @@ jQuery(document).ready(function($) {
     	return obj;
 	}, {});
 
-	if (typeof data['add-to-cart'] == "undefined") {
-		data['add-to-cart'] = $el.val();
+	if ( ( typeof data['add-to-cart'] != "undefined" ) && ( data['add-to-cart'] !== null ) ) {
+		delete( data['add-to-cart'] );
 	}
 
+	data['wsb-buy-now'] = $el.val();
 	data['action'] = 'wsb_add_to_cart_ajax';
 
     $.ajax({

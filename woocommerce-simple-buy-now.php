@@ -7,7 +7,9 @@
  * Author URI:      http://ndoublehwp.com/
  * Text Domain:     woocommerce-simple-buy-now
  * Domain Path:     /languages
- * Version:         1.0.8-dev
+ * Version:         1.0.9
+ * WC requires at least: 3.0.0
+ * WC tested up to: 3.5.4
  *
  * @package         Woocommerce_Simple_Buy_Now
  */
@@ -62,7 +64,7 @@ if ( defined( 'WOO_SIMPLE_BUY_VERSION' ) ) {
 	return;
 }
 
-define( 'WOO_SIMPLE_BUY_VERSION', '1.0.8' );
+define( 'WOO_SIMPLE_BUY_VERSION', '1.0.9' );
 define( 'WOO_SIMPLE_BUY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WOO_SIMPLE_BUY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
