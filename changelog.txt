@@ -1,4 +1,12 @@
 == Changelog ==
+= 2.0.0 – 2019-01-28 =
+* Feature - Customize button.
+* Fix – Compatible with WooCommerce add-ons.
+
+= 1.0.7 – 2018-11-02 =
+* Add – Add button positions.
+* Add – Support a shortcode for developer.
+
 = 1.0.6 - 2018-09-10 =
 * Fix - Variable product when selected.
 * Add - Add the loading icon when clicked.

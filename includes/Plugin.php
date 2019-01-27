@@ -62,17 +62,7 @@ class Plugin {
 				add_action( 'wp_footer', [ $this, 'add_checkout_template' ] );
 			}
 
-			if ( $this->is_before_button() ) {
-				add_action( 'woocommerce_before_add_to_cart_button', [ $this, 'add_simple_buy_button' ] );
-			} elseif ( $this->is_after_button() ) {
-				add_action( 'woocommerce_after_add_to_cart_button', [ $this, 'add_simple_buy_button' ], 5 );
-			} elseif ( $this->is_before_quantity_input() ) {
-				add_action( 'woocommerce_before_add_to_cart_quantity', [ $this, 'add_simple_buy_button' ] );
-			} elseif ( $this->is_after_quantity_input() ) {
-				add_action( 'woocommerce_after_add_to_cart_quantity', [ $this, 'add_simple_buy_button' ], 5 );
-			} elseif ( $this->is_replace_button() ) {
-				add_action( 'woocommerce_after_add_to_cart_button', [ $this, 'add_simple_buy_button' ], 5 );
-			}
+			$this->handle_button_positions();
 
 			add_action( 'wsb_before_add_to_cart', [ $this, 'reset_cart' ], 10 );
 			add_filter( 'woocommerce_is_checkout', [ $this, 'woocommerce_is_checkout' ] );
@@ -97,6 +87,23 @@ class Plugin {
 		$integrations[] = new Settings;
 
 		return $integrations;
+	}
+
+	/**
+	 * Handle button positions.
+	 */
+	public function handle_button_positions() {
+		if ( $this->is_before_button() ) {
+			add_action( 'woocommerce_before_add_to_cart_button', [ $this, 'add_simple_buy_button' ] );
+		} elseif ( $this->is_after_button() ) {
+			add_action( 'woocommerce_after_add_to_cart_button', [ $this, 'add_simple_buy_button' ], 5 );
+		} elseif ( $this->is_before_quantity_input() ) {
+			add_action( 'woocommerce_before_add_to_cart_quantity', [ $this, 'add_simple_buy_button' ] );
+		} elseif ( $this->is_after_quantity_input() ) {
+			add_action( 'woocommerce_after_add_to_cart_quantity', [ $this, 'add_simple_buy_button' ], 5 );
+		} elseif ( $this->is_replace_button() ) {
+			add_action( 'woocommerce_after_add_to_cart_button', [ $this, 'add_simple_buy_button' ], 5 );
+		}
 	}
 
 	/**

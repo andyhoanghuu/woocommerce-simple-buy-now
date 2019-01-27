@@ -3,7 +3,7 @@ Contributors: ndoublehwp
 Tags: woocommerce, woocommerce addon, woocommerce simple buy now, woo simple buy now, woocommerce checkout in product page
 Requires at least: 4.6
 Tested up to: 5.0.3
-Stable tag: 1.0.8
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,8 +22,8 @@ New*: You can select to Redirect to checkout page from v1.0.5
 * Fork or contribute on [GitHub](https://github.com/ndoublehwp/woocommerce-simple-buy-now/), I would be happy if you leave a star for this GitHub repository
 * Follow me [Twitter](https://twitter.com/andyhoanghuu)
 * View my other [WordPress Plugins](http://profiles.wordpress.org/ndoublehwp/)
-* Contact me and hire me [Website](http://ndoublehwp.com/)
-* I would be happy if you leave a review :) [Review](https://wordpress.org/support/plugin/woo-simple-buy-now/reviews/)
+* Contact me and hire me [https://wpismylife.com](https://wpismylife.com/)
+* I would be happy if you leave a review :) [Review](https://wordpress.org/support/plugin/woo-simple-buy-now/reviews/). It's free!
 
 = Settings =
 Go to `Dashboard > WooCommerce > Settings > WC Simple Buy Now` tab
@@ -36,13 +36,21 @@ General:
 * Reset Cart before Buy Now: Apcept reset cart before Buy Now
 * Remove Quantity input: Hide quantity input by CSS code
 
+Customize:
+
+* Button style: Enable customizer settings if you choose *Customize*
+* Normal colors
+* Hover colors
+* Dimensions
+* Size
+* Additional CSS
+
 = Shortcode for developer =
 `[woocommerce_simple_buy_now_button]`
-Arguments:
-*title*
-*class*
+Arguments: *title* - *class*
 If you are a developer, you can use this shortcode at `content-single-product` template or its child. It should be written on the inside of the form cart.
-For example, `<?php do_shortcode( '[woocommerce_simple_buy_now_button title="Buy Now" class="wsb-button"]' ); ?>`
+For example,
+`<?php do_shortcode( '[woocommerce_simple_buy_now_button title="Buy Now" class="wsb-button"]' ); ?>`
 
 == Installation ==
 
@@ -75,6 +83,10 @@ The manual installation method involves downloading my plugin and uploading it t
 5. Order detail page after checkout.
 
 == Changelog ==
+
+= 2.0.0 – 2019-01-28 =
+* Feature - Customize button.
+* Fix – Compatible with WooCommerce add-ons.
 
 = 1.0.7 - 2018-11-02 =
 * Add - Add button positions.
